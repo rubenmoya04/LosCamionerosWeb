@@ -80,7 +80,7 @@ const schedule: ScheduleItem[] = [
     days: "Viernes y Sábados",
     hours: ["7:00 - 16:30", "20:00 - 23:30"],
     icon: <Wine />,
-    color: "from-[#55d0d6] to-[#9315ba]"
+    color: "from-[#d655cb] to-[#ba1567]"
   },
   {
     days: "Domingo y Lunes",
@@ -236,8 +236,8 @@ const ScheduleCard: React.FC<{ item: ScheduleItem; index: number }> = ({ item, i
             >
               {item.days}
             </motion.p>
-            <p className="text-xs text-slate-400">
-              {item.hours[0] === "Cerrado" ? "No atendemos" : "Servicio disponible"}
+            <p className="text-xs text-slate-400 bg-slate-600/50 p-1 rounded-md ">
+              {item.hours[0] === "Cerrado" ? "No atendemos / Cerrado" : "Servicio disponible"}
             </p>
           </div>
         </div>
@@ -281,7 +281,7 @@ const SocialLinkComponent: React.FC<{ social: SocialLink; index: number }> = ({ 
     <motion.a
       key={index}
       href={social.href}
-      className="relative group w-8 h-8 sm:w-10 sm:h-12 bg-slate-800/50 rounded-full flex items-center justify-center border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300"
+      className="relative group w-14 h-14 sm:w-10 sm:h-12 bg-slate-800/50 rounded-full flex items-center justify-center border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300"
       aria-label={social.label}
       initial={{ opacity: 0, scale: 0 }}
       whileInView={{ opacity: 1, scale: 1 }}
@@ -591,6 +591,7 @@ export default function Footer() {
         >
           <div className="flex items-center gap-3 sm:gap-4">
             {socialLinks.map((social, index) => (
+
               <SocialLinkComponent key={index} social={social} index={index} />
             ))}
           </div>

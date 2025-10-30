@@ -153,7 +153,7 @@ export default function Hero() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5, duration: 0.8 }}
               >
-                Te damos la bienvenida a @
+                Te damos la bienvenida a 
               </motion.span>
               <motion.div
                 className="block mt-2 sm:mt-3"

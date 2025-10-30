@@ -17,7 +17,7 @@ const lora = Lora({
 });
 
 export const metadata = {
-  title: "Los Camioneros - Restaurante Tradicional",
+  title: "Los Camioneros - Bar - Restaurante",
   description: "El sabor auténtico en cada plato",
 };
 

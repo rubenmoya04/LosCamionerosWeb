@@ -89,13 +89,6 @@ const dishes = [
     image: "/FotosBar/Bizcocho.png",
     badge: "Postre",
   }
-  // {
-  //   id:13,
-  //   name: "Almejas a la plancha",
-  //   description: "Deliciosas almejas gallegas, cocinadas a la plancha con un toque de aceite de oliva virgen extra, acompanadas de patatas fritas caseras y pimientos del padrón",
-  //   image: "/FotosBar/Almejas.png",
-  //   badge: "Tradicional",
-  // }
 ];
 
 export default function FeaturedDishes() {
@@ -469,14 +462,14 @@ export default function FeaturedDishes() {
         `}</style>
       </section>
 
-      {/* Modal de imágenes mejorado con swipe y responsive */}
+      {/* Modal de imágenes mejorado con flechas en móvil y título llamativo */}
       <AnimatePresence>
         {isImageModalOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4"
+            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4"
             onClick={closeImageModal}
           >
             <motion.div
@@ -494,54 +487,65 @@ export default function FeaturedDishes() {
                 />
               </div>
               
-              {/* Botones de navegación - Ocultos en móvil */}
-              {!isMobile && (
-                <>
-                  <button
-                    onClick={() => navigateImage('prev')}
-                    className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm transition-all duration-300"
-                  >
-                    <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
-                  </button>
-                  <button
-                    onClick={() => navigateImage('next')}
-                    className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm transition-all duration-300"
-                  >
-                    <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
-                  </button>
-                </>
-              )}
+              {/* Botones de navegación - Visibles en móvil y desktop */}
+              <button
+                onClick={() => navigateImage('prev')}
+                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm transition-all duration-300 active:scale-95 shadow-lg"
+              >
+                <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
+              <button
+                onClick={() => navigateImage('next')}
+                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm transition-all duration-300 active:scale-95 shadow-lg"
+              >
+                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
               
               {/* Botón de cerrar */}
               <button
                 onClick={closeImageModal}
-                className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-red-500 hover:bg-red-600 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm transition-all duration-300"
+                className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-red-500 hover:bg-red-600 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm transition-all duration-300 active:scale-95 shadow-lg z-10"
               >
                 <X className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
               </button>
               
-              {/* Información de la imagen */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 sm:p-4 rounded-b-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className={`px-2 py-1 rounded-full text-xs font-bold ${getBadgeColor(dishes[selectedImageIndex].badge)}`}>
+              {/* Título llamativo e información */}
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-4 sm:p-6 rounded-b-lg">
+                {/* Badge y título principal */}
+                <div className="flex flex-col sm:flex-row items-center gap-3 mb-3">
+                  <span className={`px-3 py-1 rounded-full text-xs sm:text-sm font-bold ${getBadgeColor(dishes[selectedImageIndex].badge)} shadow-lg`}>
                     {dishes[selectedImageIndex].badge}
                   </span>
+                  <h3 className="text-white text-lg sm:text-xl md:text-2xl font-bold text-center sm:text-left">
+                    {dishes[selectedImageIndex].name}
+                  </h3>
                 </div>
-                <h3 className="text-white text-base sm:text-lg font-bold">{dishes[selectedImageIndex].name}</h3>
-                <p className="text-white/80 text-xs sm:text-sm mt-1 line-clamp-2">{dishes[selectedImageIndex].description}</p>
                 
-                {/* Indicadores de navegación para móvil */}
-                {isMobile && (
-                  <div className="flex items-center justify-center gap-2 mt-3">
+                {/* Descripción */}
+                <p className="text-white/90 text-xs sm:text-sm text-center sm:text-left mb-4 line-clamp-2">
+                  {dishes[selectedImageIndex].description}
+                </p>
+                
+                {/* Contador de imágenes */}
+                <div className="flex items-center justify-between">
+                  <div className="text-white/70 text-xs sm:text-sm">
+                    {selectedImageIndex + 1} de {dishes.length}
+                  </div>
+                  
+                  {/* Indicadores de navegación */}
+                  <div className="flex items-center gap-2">
                     {dishes.map((_, index) => (
                       <button
                         key={index}
                         onClick={() => setSelectedImageIndex(index)}
-                        className={`h-1.5 rounded-full transition-all duration-300 ${index === selectedImageIndex ? 'bg-white w-6' : 'bg-white/50 w-1.5'}`}
+                        className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${index === selectedImageIndex 
+                          ? 'bg-white w-6 sm:w-8 shadow-lg' 
+                          : 'bg-white/50 hover:bg-white/70 w-1.5 sm:w-2'
+                        }`}
                       />
                     ))}
                   </div>
-                )}
+                </div>
               </div>
             </motion.div>
           </motion.div>
