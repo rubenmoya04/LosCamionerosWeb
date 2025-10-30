@@ -91,9 +91,20 @@ const schedule: ScheduleItem[] = [
 ]
 
 const socialLinks: SocialLink[] = [
-  { icon: Instagram, href: "https://www.instagram.com/loscamionerosrubi", label: "Instagram" },
-  { icon: Facebook, href: "https://www.facebook.com/share/1A4tKngTFw/", label: "Facebook" }
-
+  { 
+    icon: Instagram, 
+    href: "https://www.instagram.com/loscamionerosrubi", 
+    label: "Instagram",
+    brandColor: "bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400",
+    hoverColor: "hover:from-purple-700 hover:via-pink-600 hover:to-orange-500"
+  },
+  { 
+    icon: Facebook, 
+    href: "https://www.facebook.com/share/1A4tKngTFw/", 
+    label: "Facebook",
+    brandColor: "bg-gradient-to-br from-blue-600 to-blue-500",
+    hoverColor: "hover:from-blue-700 hover:to-blue-600"
+  }
 ]
 
 // Custom hook for hover states
@@ -178,7 +189,7 @@ const ContactCard: React.FC<{
 
       <div className="flex-1 min-w-0">
         <motion.p
-          className="text-xs text-slate-400 mb-1"
+          className="text-xs text-slate-200 mb-1 sm:mb-2 font-semibold"
           initial={{ opacity: 0.6 }}
           whileHover={{ opacity: 1 }}
         >
@@ -236,7 +247,7 @@ const ScheduleCard: React.FC<{ item: ScheduleItem; index: number }> = ({ item, i
             >
               {item.days}
             </motion.p>
-            <p className="text-xs text-slate-400 bg-slate-600/50 p-1 rounded-md ">
+            <p className="text-xs text-slate-300 bg-slate-600/50 p-1 rounded-md ">
               {item.hours[0] === "Cerrado" ? "No atendemos / Cerrado" : "Servicio disponible"}
             </p>
           </div>
@@ -275,30 +286,55 @@ const ScheduleCard: React.FC<{ item: ScheduleItem; index: number }> = ({ item, i
 
 // Social Link Component - Fully responsive
 const SocialLinkComponent: React.FC<{ social: SocialLink; index: number }> = ({ social, index }) => {
-  const IconComponent = social.icon
+  const IconComponent = social.icon;
 
   return (
     <motion.a
-      key={index}
       href={social.href}
-      className="relative group w-14 h-14 sm:w-10 sm:h-12 bg-slate-800/50 rounded-full flex items-center justify-center border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300"
-      aria-label={social.label}
-      initial={{ opacity: 0, scale: 0 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.1, type: "spring" }}
+      className={`relative group w-14 h-14 sm:w-10 sm:h-12 ${social.brandColor} ${social.hoverColor} rounded-full flex items-center justify-center border border-slate-700/50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-110`}
       whileTap={{ scale: 0.95 }}
     >
-      <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 group-hover:text-cyan-400 transition-colors" />
+      {/* Icono siempre visible */}
+      <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 text-white relative z-10 transition-colors duration-300" />
+
+      {/* Overlay de hover */}
       <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full"
-        initial={{ opacity: 0 }}
-        whileHover={{ opacity: 1 }}
-        transition={{ duration: 0.2 }}
+        className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        style={{
+          background:
+            social.label === "Instagram"
+              ? "radial-gradient(circle, rgba(225,48,108,0.2) 0%, transparent 70%)"
+              : "radial-gradient(circle, rgba(66,103,178,0.2) 0%, transparent 70%)",
+        }}
+      />
+
+      {/* Efecto de pulso */}
+      <motion.div
+        className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-30 pointer-events-none"
+        style={{
+          background:
+            social.label === "Instagram"
+              ? "radial-gradient(circle, rgba(225,48,108,0.3) 0%, transparent 70%)"
+              : "radial-gradient(circle, rgba(66,103,178,0.3) 0%, transparent 70%)",
+        }}
+        animate={{ scale: [1, 1.1, 1] }}
+        transition={{ duration: 1, repeat: Infinity }}
+      />
+
+      {/* Brillo de marca */}
+      <motion.div
+        className="absolute -inset-1 rounded-full opacity-0 group-hover:opacity-100 blur-sm pointer-events-none transition-opacity duration-300"
+        style={{
+          background:
+            social.label === "Instagram"
+              ? "linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)"
+              : "linear-gradient(45deg, #1877f2 0%, #42a5f5 100%)",
+        }}
       />
     </motion.a>
-  )
-}
+  );
+};
+
 
 // Main Footer Component
 export default function Footer() {

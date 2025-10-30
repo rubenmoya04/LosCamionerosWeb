@@ -305,8 +305,8 @@ export default function FeaturedDishes() {
                 key={dish.id}
                 variants={itemVariants}
                 whileHover={{
-                  scale: isMobile ? 1.02 : 1.05,
-                  y: isMobile ? -5 : -10
+                  scale: isMobile ? 1 : 1.05,
+                  y: isMobile ? 0 : -10
                 }}
                 transition={{ type: "spring", stiffness: 400 }}
                 onMouseEnter={() => setHoveredCard(dish.id)}
@@ -356,21 +356,23 @@ export default function FeaturedDishes() {
                     <img
                       src={dish.image}
                       alt={dish.name}
-                      className={`w-full h-full object-cover transition-all duration-700 ${hoveredCard === dish.id ? "scale-110" : "scale-100"}`}
+                      className={`w-full h-full object-cover transition-all duration-700 ${isMobile ? "scale-100" : hoveredCard === dish.id ? "scale-110" : "scale-100"}`}
                     />
 
-                    {/* Overlay con efecto hover */}
-                    <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-500 ${hoveredCard === dish.id ? "opacity-100" : "opacity-0"}`}>
-                      <div className="absolute bottom-2 sm:bottom-3 md:bottom-4 left-2 sm:left-3 md:left-4 right-2 sm:right-3 md:right-4">
-                        <div className="flex items-center gap-1 sm:gap-2 text-white">
-                          <ChefHat className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
-                          <span className="text-xs sm:text-sm font-medium">Hecho con amor</span>
+                    {/* Overlay con efecto hover - Solo en desktop */}
+                    {!isMobile && (
+                      <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-500 ${hoveredCard === dish.id ? "opacity-100" : "opacity-0"}`}>
+                        <div className="absolute bottom-2 sm:bottom-3 md:bottom-4 left-2 sm:left-3 md:left-4 right-2 sm:right-3 md:right-4">
+                          <div className="flex items-center gap-1 sm:gap-2 text-white">
+                            <ChefHat className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
+                            <span className="text-xs sm:text-sm font-medium">Hecho con amor</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
 
-                    {/* Efecto de brillo */}
-                    {hoveredCard === dish.id && (
+                    {/* Efecto de brillo - Solo en desktop */}
+                    {!isMobile && hoveredCard === dish.id && (
                       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full animate-shimmer"></div>
                     )}
                   </div>
@@ -389,8 +391,10 @@ export default function FeaturedDishes() {
                     </p>
                   </div>
 
-                  {/* Efecto de borde animado */}
-                  <div className="absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-blue-400 to-cyan-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500 -z-10"></div>
+                  {/* Efecto de borde animado - Solo en desktop */}
+                  {!isMobile && (
+                    <div className="absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-blue-400 to-cyan-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500 -z-10"></div>
+                  )}
                 </div>
               </motion.div>
             ))}
@@ -490,13 +494,13 @@ export default function FeaturedDishes() {
               {/* Botones de navegación - Visibles en móvil y desktop */}
               <button
                 onClick={() => navigateImage('prev')}
-                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm transition-all duration-300 active:scale-95 shadow-lg"
+                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-[#c2c2c2] hover:bg-white/30 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm transition-all duration-300 active:scale-95 shadow-lg"
               >
                 <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
               <button
                 onClick={() => navigateImage('next')}
-                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm transition-all duration-300 active:scale-95 shadow-lg"
+                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-[#c2c2c2] hover:bg-white/30 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm transition-all duration-300 active:scale-95 shadow-lg"
               >
                 <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
