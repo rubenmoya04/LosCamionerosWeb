@@ -704,7 +704,7 @@ export default function LosCamionerosGallery() {
                 </div>
                 
                 <h3 className="text-lg sm:text-xl font-bold text-gray-800">
-                  ¿Ya has compartido tu experiencia?
+                  ¿Ya has compartido tu experiencia?pp
                 </h3>
                 
                 <p className="text-sm sm:text-base text-gray-600 text-center max-w-xs ">
