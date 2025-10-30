@@ -19,6 +19,9 @@ const lora = Lora({
 export const metadata = {
   title: "Los Camioneros - Bar - Restaurante",
   description: "El sabor auténtico en cada plato",
+  icons: {
+    icon: "/logoCamioneros.svg", 
+  },
 };
 
 interface RootLayoutProps {
