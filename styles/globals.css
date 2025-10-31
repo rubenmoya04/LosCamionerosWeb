@@ -123,6 +123,14 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Solo lo mínimo para prevenir zoom en móvil */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+  
+  /* Prevenir zoom en inputs en iOS */
+  input, textarea, select {
+    font-size: 16px;
   }
 }
 
@@ -158,9 +166,11 @@
   animation-delay: 0.4s;
 }
 
+/* Eliminar scroll-behavior smooth para prevenir scroll automático */
 html {
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */
 }
+
 @keyframes gradient {
   0% {
     background-position: 0% 50%;
