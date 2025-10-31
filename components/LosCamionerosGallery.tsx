@@ -45,6 +45,12 @@ export default function LosCamionerosGallery() {
       title: "Espacio Acogedor",
       description: "El lugar perfecto para compartir nuestra comida casera",
       badge: "Favorito"
+    },
+    {
+      src: "/FotosBar/FotosBar4.jpg",
+      title: "",
+      description: "",
+      badge: "Favorito"
     }
   ]
 
@@ -55,7 +61,7 @@ export default function LosCamionerosGallery() {
       description: "Platos tradicionales con el sabor de siempre",
       color: "from-blue-400 to-cyan-500",
       stat: "50+ Años",
-      mobileStat: "50+"
+      mobileStat: "50+ Años"
     },
     {
       icon: <Heart className="w-6 h-6" />,

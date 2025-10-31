@@ -60,14 +60,14 @@ export default function Hero() {
   }
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-sky-100 via-blue-200 to-indigo-300">
-      {/* Destellos blancos animados */}
+    <div className="relative min-h-screen bg-gradient-to-br from-sky-100 via-blue-200 to-indigo-300 overflow-hidden">
+      {/* Destellos blancos animados - CONFINADOS para no causar zoom */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute top-20 left-10 w-32 h-32 bg-white/20 rounded-full blur-2xl"
           animate={{
-            x: [0, 100, 0],
-            y: [0, -50, 0],
+            x: [0, 30, 0], // Reducido drásticamente para no salir del viewport
+            y: [0, -20, 0],
             opacity: [0.3, 0.6, 0.3],
           }}
           transition={{
@@ -79,8 +79,8 @@ export default function Hero() {
         <motion.div
           className="absolute top-40 right-20 w-48 h-48 bg-white/15 rounded-full blur-3xl"
           animate={{
-            x: [0, -80, 0],
-            y: [0, 60, 0],
+            x: [0, -30, 0], // Reducido drásticamente
+            y: [0, 25, 0],
             opacity: [0.2, 0.5, 0.2],
           }}
           transition={{
@@ -93,8 +93,8 @@ export default function Hero() {
         <motion.div
           className="absolute bottom-32 left-1/4 w-40 h-40 bg-white/25 rounded-full blur-2xl"
           animate={{
-            x: [0, 120, 0],
-            y: [0, -40, 0],
+            x: [0, 40, 0], // Reducido drásticamente
+            y: [0, -15, 0],
             opacity: [0.4, 0.7, 0.4],
           }}
           transition={{
@@ -122,11 +122,11 @@ export default function Hero() {
               <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full blur-xl opacity-40"
                 animate={{
-                  scale: [1, 1.1, 1],
-                  opacity: [0.4, 0.5, 0.4],
+                  scale: [1, 1.05, 1], // Reducido para menos impacto
+                  opacity: [0.4, 0.45, 0.4],
                 }}
                 transition={{
-                  duration: 3,
+                  duration: 4, // Más lento
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
@@ -149,7 +149,7 @@ export default function Hero() {
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-black/80 mb-3 sm:mb-4 leading-tight drop-shadow-lg">
               <motion.span
                 className="block"
-                initial={{ opacity: 0, x: -50 }}
+                initial={{ opacity: 0, x: -30 }} // Reducido de 50 a 30
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5, duration: 0.8 }}
               >
@@ -157,7 +157,7 @@ export default function Hero() {
               </motion.span>
               <motion.div
                 className="block mt-2 sm:mt-3"
-                initial={{ opacity: 0, x: 50 }}
+                initial={{ opacity: 0, x: 30 }} // Reducido de 50 a 30
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.7, duration: 0.8 }}
               >
@@ -175,33 +175,30 @@ export default function Hero() {
           {/* Subtítulo con mejor legibilidad */}
           <motion.p
             variants={itemVariants}
-className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#394258] mb-6 sm:mb-8 lg:mb-10 max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto leading-relaxed px-3 sm:px-4 py-2 sm:py-3 drop-shadow-md bg-white/70 backdrop-blur-md rounded-lg sm:rounded-xl shadow-lg border border-blue-100"
+            className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#394258] mb-6 sm:mb-8 lg:mb-10 max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto leading-relaxed px-3 sm:px-4 py-2 sm:py-3 drop-shadow-md bg-white/70 backdrop-blur-md rounded-lg sm:rounded-xl shadow-lg border border-blue-100"
           >
-            Un lugar{" "}
-            <motion.span
-              className="inline-block text-[#44657a] font-bold drop-shadow-lg"
-              key={currentWordIndex}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-            >
-              {words[currentWordIndex]}
-            </motion.span>{" "}
-            para disfrutar cada día
+            <span className="inline-flex items-center flex-wrap justify-center gap-1">
+              <span>Un lugar</span>
+              <motion.span
+                className="inline-block text-[#44657a] font-bold drop-shadow-lg min-w-[80px] text-center"
+                key={currentWordIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+              >
+                {words[currentWordIndex]}
+              </motion.span>
+              <span>para disfrutar cada día</span>
+            </span>
           </motion.p>
 
-          {/* Botones con mejor espaciado y diseño */}
+          {/* Botones con mejor espaciado y diseño - sin scale en móvil */}
           <motion.div
             variants={itemVariants}
             className="flex flex-col sm:flex-row gap-4 sm:gap-6 lg:gap-8 justify-center items-center px-4 sm:px-6 mb-12 sm:mb-16 lg:mb-20"
           >
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              className="w-full sm:w-auto max-w-xs sm:max-w-none"
-            >
+            <div className="w-full sm:w-auto max-w-xs sm:max-w-none">
               <HoverBorderGradient
                 containerClassName="rounded-full"
                 as="button"
@@ -209,17 +206,12 @@ className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#394258] mb-6 sm:mb
                 className="bg-[#4e68ae] backdrop-blur-sm text-white px-8 cursor-pointer py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 text-base sm:text-lg lg:text-xl font-semibold transition-all duration-300 hover:bg-[#354779] hover:shadow-2xl flex items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto min-h-[52px] sm:min-h-[56px] lg:min-h-[64px] rounded-full"
               >
                 <Utensils className="w-5 h-5 sm:w-6 sm:h-6" />
-                <span>Ver Menú</span>
+                <span>Ver Platos</span>
                 <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
               </HoverBorderGradient>
-            </motion.div>
+            </div>
 
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              className="w-full sm:w-auto max-w-xs sm:max-w-none"
-            >
+            <div className="w-full sm:w-auto max-w-xs sm:max-w-none">
               <Button
                 variant="outline"
                 onClick={makeReservationCall}
@@ -228,59 +220,35 @@ className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#394258] mb-6 sm:mb
                 <Phone className="w-5 h-5 sm:w-6 sm:h-6" />
                 <span>Llamar Ahora</span>
               </Button>
-            </motion.div>
+            </div>
           </motion.div>
 
-          {/* Indicadores de confianza con mejor diseño responsive */}
+          {/* Indicadores de confianza con mejor diseño responsive - sin scale en móvil */}
           <motion.div
             variants={itemVariants}
             className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 lg:gap-8 text-blue-900 px-4"
           >
-            <motion.div
-              className="flex items-center gap-3 px-4 py-3 sm:px-6 sm:py-4 rounded-xl bg-white/80 backdrop-blur-md border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto justify-center sm:justify-start"
-              whileHover={{
-                scale: 1.05,
-                backgroundColor: "rgba(255, 255, 255, 0.95)",
-                y: -2
-              }}
-              transition={{ type: "spring", stiffness: 400 }}
-            >
+            <div className="flex items-center gap-3 px-4 py-3 sm:px-6 sm:py-4 rounded-xl bg-white/80 backdrop-blur-md border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto justify-center sm:justify-start">
               <Star className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500 fill-yellow-500" />
               <span className="text-sm sm:text-base lg:text-lg font-medium">4.8★ Valoración</span>
-            </motion.div>
+            </div>
 
-            <motion.div
-              className="flex items-center gap-3 px-4 py-3 sm:px-6 sm:py-4 rounded-xl bg-white/80 backdrop-blur-md border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto justify-center sm:justify-start"
-              whileHover={{
-                scale: 1.05,
-                backgroundColor: "rgba(255, 255, 255, 0.95)",
-                y: -2
-              }}
-              transition={{ type: "spring", stiffness: 400 }}
-            >
+            <div className="flex items-center gap-3 px-4 py-3 sm:px-6 sm:py-4 rounded-xl bg-white/80 backdrop-blur-md border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto justify-center sm:justify-start">
               <Utensils className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
               <span className="text-sm sm:text-base lg:text-lg font-medium">50+ Años</span>
-            </motion.div>
+            </div>
 
-            <motion.div
-              className="flex items-center gap-3 px-4 py-3 sm:px-6 sm:py-4 rounded-xl bg-white/80 backdrop-blur-md border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto justify-center sm:justify-start"
-              whileHover={{
-                scale: 1.05,
-                backgroundColor: "rgba(255, 255, 255, 0.95)",
-                y: -2
-              }}
-              transition={{ type: "spring", stiffness: 400 }}
-            >
+            <div className="flex items-center gap-3 px-4 py-3 sm:px-6 sm:py-4 rounded-xl bg-white/80 backdrop-blur-md border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto justify-center sm:justify-start">
               <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
               <span className="text-sm sm:text-base lg:text-lg font-medium">Cocina Artesanal</span>
-            </motion.div>
+            </div>
           </motion.div>
 
           {/* Espaciado adicional para evitar que se pegue con el contenido siguiente */}
           <div className="h-16 sm:h-20 lg:h-24" />
         </motion.div>
       </section>
-<div className="w-full h-[3px] bg-gradient-to-r from-white-500 via-black/50 to-white-500" />
+      <div className="w-full h-[3px] bg-gradient-to-r from-white-500 via-black/50 to-white-500" />
     </div>
   )
 }

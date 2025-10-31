@@ -84,10 +84,24 @@ const dishes = [
   },
   {
     id:12,
-    name: "Bizcocho individual con bola de chocolate",
-    description: "Un delicioso bizcocho individual con bola de chocolate, el postre perfecto para cerrar cualquier comida",
+    name: "Coulant con bola de chocolate",
+    description: "Un coulant con bola de chocolate, el postre perfecto para cerrar cualquier comida",
     image: "/FotosBar/Bizcocho.png",
     badge: "Postre",
+  },
+  {
+    id:13,
+    name: "Sepia con gambas rojas",
+    description: "Sepia fresca, cocinada a la plancha con su punto perfecto, servida con gambas rojas a la plancha",
+    image: "/FotosBar/SepiaGamba.png",
+    badge: "Tradicional",
+  },
+  {
+    id:14,
+    name: "Almejas",
+    description: "Almejas frescas, cocinadas a la plancha con su punto perfecto",
+    image: "/FotosBar/Almejas.png",
+    badge: "Tradicional",
   }
 ];
 
@@ -160,7 +174,7 @@ export default function FeaturedDishes() {
     }
   }
 
-  // Modal handlers
+  // Modal handlers - SIN ANIMACIONES DE SCALE
   const openImageModal = (index: number) => {
     setSelectedImageIndex(index)
     setIsImageModalOpen(true)
@@ -245,11 +259,11 @@ export default function FeaturedDishes() {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Efectos de fondo decorativos */}
+        {/* Efectos de fondo decorativos - SIN MOVIMIENTOS QUE CAUSEN ZOOM */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem] rounded-full bg-gradient-to-tr from-blue-300 via-blue-200 to-cyan-300 mix-blend-multiply filter blur-3xl opacity-30 animate-float-slow" />
-          <div className="absolute top-32 right-16 w-56 h-56 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-[26rem] lg:h-[26rem] rounded-full bg-gradient-to-tr from-emerald-300 via-green-200 to-cyan-300 mix-blend-multiply filter blur-3xl opacity-25 animate-float" />
-          <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 w-72 h-72 sm:w-96 sm:h-96 md:w-[24rem] md:h-[24rem] lg:w-[30rem] lg:h-[30rem] rounded-full bg-gradient-to-tr from-cyan-200 via-blue-100 to-emerald-200 mix-blend-multiply filter blur-3xl opacity-20 animate-float-delay" />
+          <div className="absolute top-20 left-10 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem] rounded-full bg-gradient-to-tr from-blue-300 via-blue-200 to-cyan-300 mix-blend-multiply filter blur-3xl opacity-30" />
+          <div className="absolute top-32 right-16 w-56 h-56 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-[26rem] lg:h-[26rem] rounded-full bg-gradient-to-tr from-emerald-300 via-green-200 to-cyan-300 mix-blend-multiply filter blur-3xl opacity-25" />
+          <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 w-72 h-72 sm:w-96 sm:h-96 md:w-[24rem] md:h-[24rem] lg:w-[30rem] lg:h-[30rem] rounded-full bg-gradient-to-tr from-cyan-200 via-blue-100 to-emerald-200 mix-blend-multiply filter blur-3xl opacity-20" />
         </div>
 
         <div className="max-w-6xl sm:max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
@@ -262,7 +276,7 @@ export default function FeaturedDishes() {
           >
             <motion.div variants={itemVariants} className="flex items-center justify-center mb-4 sm:mb-6">
               <div className="relative">
-                <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-blue-400 to-emerald-500 rounded-full blur-lg opacity-50 animate-pulse"></div>
+                <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-blue-400 to-emerald-500 rounded-full blur-lg opacity-50"></div>
                 <div className="relative bg-gradient-to-r from-emerald-500 to-blue-400 p-2 sm:p-3 md:p-4 rounded-full shadow-2xl">
                   <UtensilsCrossed className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-11 lg:w-12 lg:h-12 text-white" />
                 </div>
@@ -293,7 +307,7 @@ export default function FeaturedDishes() {
             </motion.p>
           </motion.div>
 
-          {/* Grid de platos mejorado */}
+          {/* Grid de platos mejorado - SIN HOVER SCALE EN MÓVIL */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -305,10 +319,10 @@ export default function FeaturedDishes() {
                 key={dish.id}
                 variants={itemVariants}
                 whileHover={{
-                  scale: isMobile ? 1 : 1.05,
-                  y: isMobile ? 0 : -10
+                  scale: isMobile ? 1 : 1.02, // REDUCIDO DE 1.05 A 1.02
+                  y: isMobile ? 0 : -5 // REDUCIDO DE -10 A -5
                 }}
-                transition={{ type: "spring", stiffness: 400 }}
+                transition={{ type: "spring", stiffness: 300 }} // REDUCIDO STIFFNESS
                 onMouseEnter={() => setHoveredCard(dish.id)}
                 onMouseLeave={() => setHoveredCard(null)}
               >
@@ -339,7 +353,7 @@ export default function FeaturedDishes() {
                     </div>
                   </div>
 
-                  {/* Imagen clicable */}
+                  {/* Imagen clicable - SIN SCALE EN MÓVIL */}
                   <div
                     className="relative w-full h-48 sm:h-56 md:h-64 lg:h-72 overflow-hidden cursor-pointer"
                     onClick={() => openImageModal(index)}
@@ -356,7 +370,7 @@ export default function FeaturedDishes() {
                     <img
                       src={dish.image}
                       alt={dish.name}
-                      className={`w-full h-full object-cover transition-all duration-700 ${isMobile ? "scale-100" : hoveredCard === dish.id ? "scale-110" : "scale-100"}`}
+                      className={`w-full h-full object-cover transition-all duration-700 ${isMobile ? "scale-100" : hoveredCard === dish.id ? "scale-105" : "scale-100"}`} // REDUCIDO DE 1.10 A 1.05
                     />
 
                     {/* Overlay con efecto hover - Solo en desktop */}
@@ -466,7 +480,7 @@ export default function FeaturedDishes() {
         `}</style>
       </section>
 
-      {/* Modal de imágenes mejorado con flechas en móvil y título llamativo */}
+      {/* Modal de imágenes mejorado - SIN ANIMACIONES DE SCALE */}
       <AnimatePresence>
         {isImageModalOpen && (
           <motion.div
@@ -477,9 +491,9 @@ export default function FeaturedDishes() {
             onClick={closeImageModal}
           >
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
+              initial={{ opacity: 0 }} // ELIMINADO SCALE
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }} // ELIMINADO SCALE
               className="relative w-full h-full max-w-4xl max-h-[90vh] sm:max-h-[85vh]"
               onClick={(e) => e.stopPropagation()}
             >
@@ -516,14 +530,24 @@ export default function FeaturedDishes() {
               {/* Título llamativo e información */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-4 sm:p-6 rounded-b-lg">
                 {/* Badge y título principal */}
-                <div className="flex flex-col sm:flex-row items-center gap-3 mb-3">
-                  <span className={`px-3 py-1 rounded-full text-xs sm:text-sm font-bold ${getBadgeColor(dishes[selectedImageIndex].badge)} shadow-lg`}>
-                    {dishes[selectedImageIndex].badge}
-                  </span>
-                  <h3 className="text-white text-lg sm:text-xl md:text-2xl font-bold text-center sm:text-left">
-                    {dishes[selectedImageIndex].name}
-                  </h3>
-                </div>
+                <div className="flex flex-row items-center gap-4 mb-3">
+    
+    {/* Título Principal */}
+    <h3 className="text-white text-lg sm:text-xl md:text-2xl font-bold text-left whitespace-nowrap">
+      {dishes[selectedImageIndex].name} 
+    </h3>
+
+    {/* Badge */}
+    <span 
+      className={`
+        px-3 py-1 rounded-full text-xs sm:text-sm font-bold shadow-lg 
+        ${getBadgeColor(dishes[selectedImageIndex].badge)}
+      `}
+    >
+      {dishes[selectedImageIndex].badge}
+    </span>
+      
+  </div>
                 
                 {/* Descripción */}
                 <p className="text-white/90 text-xs sm:text-sm text-center sm:text-left mb-4 line-clamp-2">
