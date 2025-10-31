@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Los Camioneros - Restaurante en Rubí",
   description: "Descubre el sabor auténtico en Los Camioneros, un restaurante familiar con más de 50 años de tradición. Cocina artesanal y un ambiente acogedor en Rubí.",
-  keywords: ["Los Camioneros", "restaurante", "Rubí", "comida", "cocina artesanal", "restaurante familiar"],
-  authors: [{ name: "Los Camioneros" }],
+  keywords: ["Los Camioneros", "restaurante", "Rubí", "comida", "cocina artesanal", "restaurante familiar", "camioneros rubí", "bar", "tapas", "menú", "menu", "platos combinados"],
+  authors: [{ name: "Los Camioneros Rubí" }],
   icons: {
     icon: "logoCamioneros.svg",
   },
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     title: "Los Camioneros - Restaurante en Rubí",
     description: "Descubre el sabor auténtico en Los Camioneros, un restaurante familiar con más de 50 años de tradición.",
     url: "https://www.loscamionerosrubi.com",
-    siteName: "Los Camioneros",
+    siteName: "Los Camioneros Rubi",
     type: "website",
   },
   twitter: {
