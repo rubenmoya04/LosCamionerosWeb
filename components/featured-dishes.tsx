@@ -56,54 +56,62 @@ const dishes = [
   },
   {
     id: 8,
+    name: "Pata de pulpo",
+    description: "Pata de pulpo asada a la brasa, servida sobre cama de patatas con pimentón y aceite de oliva virgen extra, un clásico gallego con un toque moderno",
+    image: "/FotosBar/PulpoPata.png",
+    badge: "Premium",
+  },
+  {
+    id: 9,
     name: "Lubina con berenjena",
     description: "Fresca lubina cocinada a la plancha en el momento, acompañada de berenjena asada y un toque de aceite de oliva virgen extra",
     image: "/FotosBar/Lubina2.png",
     badge: "Tradicional",
   },
   {
-    id: 9,
+    id: 10,
     name: "Plato combinado de sepia",
     description: "Sepia fresca, cocinada a la plancha con su punto perfecto, servida con guarnición de patatas fritas caseras y ensalada fresca",
     image: "/FotosBar/SepiaPlato.png",
     badge: "Especialidad",
   },
   {
-    id: 10,
+    id: 11,
     name: "Plato de jamón",
     description: "Excepcional jamón ibérico de bellota, cortado a mano por nuestro maestro cortador",
     image: "/FotosBar/PlatoJamón.png",
     badge: "Especialidad",
   },
   {
-    id: 11,
+    id: 12,
     name: "Tortilla de patatas",
     description: "La especialidad de la casa: jugosa tortilla de patatas, dorada y casera.",
     image: "/FotosBar/TortillaPatata.png",
     badge: "Especialidad",
   },
   {
-    id: 12,
+    id: 13,
     name: "Coulant con bola de chocolate",
     description: "Un coulant con bola de chocolate, el postre perfecto para cerrar cualquier comida",
     image: "/FotosBar/Bizcocho.png",
     badge: "Postre",
   },
   {
-    id: 13,
+    id: 14,
     name: "Sepia con gambas rojas",
     description: "Sepia fresca, cocinada a la plancha con su punto perfecto, servida con gambas rojas a la plancha",
     image: "/FotosBar/SepiaGamba.png",
     badge: "Tradicional",
   },
   {
-    id: 14,
+    id: 15,
     name: "Almejas",
     description: "Almejas frescas, cocinadas a la plancha con su punto perfecto",
     image: "/FotosBar/Almejas.png",
     badge: "Tradicional",
   }
 ];
+
 
 export default function FeaturedDishes() {
   const [visibleCards, setVisibleCards] = useState<number[]>([])

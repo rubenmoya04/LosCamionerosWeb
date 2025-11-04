@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient"
 import Image from "next/image"
 import GradientText from "./GradientText"
-import { Utensils, Phone, Star, ArrowRight, Sparkles } from "lucide-react"
+import { Utensils, Phone, Star, ArrowRight, Sparkles,PartyPopper  } from "lucide-react"
 
 export default function Hero() {
   const [isVisible, setIsVisible] = useState(false)
@@ -211,17 +211,22 @@ export default function Hero() {
           >
             <div className="flex items-center gap-3 px-4 py-3 sm:px-6 sm:py-4 rounded-xl bg-white/80 backdrop-blur-md border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto justify-center sm:justify-start">
               <Star className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500 fill-yellow-500" />
-              <span className="text-sm sm:text-base lg:text-lg font-medium">4.8★ Valoración</span>
+              <span className="text-sm sm:text-base lg:text-lg font-medium">4.8 ★ Valoración</span>
             </div>
 
             <div className="flex items-center gap-3 px-4 py-3 sm:px-6 sm:py-4 rounded-xl bg-white/80 backdrop-blur-md border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto justify-center sm:justify-start">
-              <Utensils className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+              <PartyPopper className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" />
               <span className="text-sm sm:text-base lg:text-lg font-medium">50+ Años</span>
             </div>
 
             <div className="flex items-center gap-3 px-4 py-3 sm:px-6 sm:py-4 rounded-xl bg-white/80 backdrop-blur-md border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto justify-center sm:justify-start">
               <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
               <span className="text-sm sm:text-base lg:text-lg font-medium">Cocina Artesanal</span>
+            </div>
+
+            <div className="flex items-center gap-3 px-4 py-3 sm:px-6 sm:py-4 rounded-xl bg-white/80 backdrop-blur-md border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto justify-center sm:justify-start">
+              <Utensils className="w-5 h-5 sm:w-6 sm:h-6 text-blue-900" />
+              <span className=" text-sm sm:text-base lg:text-lg font-medium">Menú diario: <span className="font-bold">Martes - Viernes</span></span>
             </div>
           </motion.div>
 
