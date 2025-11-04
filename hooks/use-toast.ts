@@ -78,6 +78,21 @@ function scheduleRemove(toastId: string) {
   toastTimeouts.set(toastId, timeout)
 }
 
+/*************  ✨ Windsurf Command ⭐  *************/
+/**
+ * Creates a toast notification.
+ * @param {Omit<ToasterToast, 'id'>} props - The properties of the toast notification.
+ * @returns {{ id: string, dismiss: () => void, update: (updateProps: Partial<ToasterToast>) => void }}
+ * @example
+ * const { id, dismiss, update } = toast({
+ *   title: 'Hello World',
+ *   description: 'This is a test',
+ *   action: <Button onClick={() => update({ title: 'Updated!' })}>Update</Button>
+ * })
+ * dismiss() // Dismiss the toast
+ * update({ title: 'Updated!' }) // Update the toast
+ */
+/*******  e7319d05-0f49-4c52-ad36-aa1c77fa31a9  *******/
 export function toast(props: Omit<ToasterToast, 'id'>) {
   const id = genId()
   const dismiss = () => dispatch({ type: 'DISMISS_TOAST', toastId: id })

@@ -28,10 +28,13 @@ const dishes = [
   },
   {
     id: 4,
-    name: "Secreto Ibérico a la brasa",
-    description: "Jugoso corte de cerdo ibérico de bellota, cocinado lentamente a la brasa con leña, acompañado de patatas fritas caseras",
-    image: "/FotosBar/Brasa.png",
-    badge: "Premium",
+name: "Croquetas de Jamón Caseras",
+    description: "Deliciosas croquetas de jamón ibérico ",
+    image: "/FotosBar/CroquetasJamón.png",
+    badge: "Tapas",
+
+
+    
   },
   {
     id: 5,
@@ -59,14 +62,14 @@ const dishes = [
     name: "Pata de pulpo",
     description: "Pata de pulpo asada a la brasa, servida sobre cama de patatas con pimentón y aceite de oliva virgen extra, un clásico gallego con un toque moderno",
     image: "/FotosBar/PulpoPata.png",
-    badge: "Premium",
+    badge: "Tapas",
   },
   {
     id: 9,
-    name: "Lubina con berenjena",
-    description: "Fresca lubina cocinada a la plancha en el momento, acompañada de berenjena asada y un toque de aceite de oliva virgen extra",
-    image: "/FotosBar/Lubina2.png",
-    badge: "Tradicional",
+    name: "Tortilla de patatas",
+    description: "La especialidad de la casa: jugosa tortilla de patatas, dorada y casera.",
+    image: "/FotosBar/TortillaPatata.png",
+    badge: "Especialidad",
   },
   {
     id: 10,
@@ -80,14 +83,17 @@ const dishes = [
     name: "Plato de jamón",
     description: "Excepcional jamón ibérico de bellota, cortado a mano por nuestro maestro cortador",
     image: "/FotosBar/PlatoJamón.png",
-    badge: "Especialidad",
+    badge: "Tapas",
   },
   {
     id: 12,
-    name: "Tortilla de patatas",
-    description: "La especialidad de la casa: jugosa tortilla de patatas, dorada y casera.",
-    image: "/FotosBar/TortillaPatata.png",
-    badge: "Especialidad",
+    name: "Secreto Ibérico a la brasa",
+    description: "Jugoso corte de cerdo ibérico de bellota, cocinado lentamente a la brasa con leña, acompañado de patatas fritas caseras",
+    image: "/FotosBar/Brasa.png",
+    badge: "Premium",
+
+
+    
   },
   {
     id: 13,
@@ -109,7 +115,20 @@ const dishes = [
     description: "Almejas frescas, cocinadas a la plancha con su punto perfecto",
     image: "/FotosBar/Almejas.png",
     badge: "Tradicional",
-  }
+  }, {
+    id: 16,
+    name: "Tapas de pimientos del padrón",
+    description: "Tapas de pimientos del padrón, cocinadas a la plancha con su punto perfecto",
+    image: "/FotosBar/PimientosPadrón.png",
+    badge: "Tapas",
+  },
+  {
+    id: 17,
+    name: "Lubina con berenjena",
+    description: "Fresca lubina cocinada a la plancha en el momento, acompañada de berenjena asada y un toque de aceite de oliva virgen extra",
+    image: "/FotosBar/Lubina2.png",
+    badge: "Tradicional",
+  },
 ];
 
 
@@ -228,10 +247,13 @@ export default function FeaturedDishes() {
         return "bg-gradient-to-r from-pink-400 to-rose-400 text-white"
       case "Saludable":
         return "bg-gradient-to-r from-green-500 to-emerald-500 text-white"
+      case "Tapas":
+        return "bg-gradient-to-r from-lime-600 via-emerald-600 to-green-700 text-white shadow-md shadow-lime-800/30"
       default:
         return "bg-gradient-to-r from-blue-500 to-cyan-500 text-white"
     }
   }
+
 
   const containerVariants = {
     hidden: { opacity: 0 },

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Menu, X, House, UtensilsCrossed, BadgeInfo, CookingPot, Flame, Phone, Images } from "lucide-react"
+import { Menu, X, House, ChefHat, BadgeInfo, CookingPot, Phone, Images } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 
@@ -34,7 +34,7 @@ export default function Navbar() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
         ? "bg-white/95 backdrop-blur-lg shadow-lg"
         : "bg-white/90 backdrop-blur-sm shadow-sm"
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14 sm:h-16 md:h-18 lg:h-20">
@@ -66,6 +66,16 @@ export default function Navbar() {
               <span className="hidden sm:inline">Inicio</span>
               <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
             </button>
+
+            <button
+              onClick={() => scrollToSection("horario")}
+              className="group relative flex items-center gap-2 text-base sm:text-lg text-slate-700 font-medium transition-all duration-300 hover:text-blue-700 hover:scale-105 cursor-pointer py-2"
+            >
+              <ChefHat className="h-4 w-4 sm:h-5 sm:w-5 transition-colors duration-300 group-hover:text-blue-700" />
+              <span className="hidden sm:inline">Horario</span>
+              <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
+            </button>
+
 
             <button
               onClick={() => scrollToSection("galeria")}
@@ -107,7 +117,7 @@ export default function Navbar() {
               className="group relative flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer py-2 px-3 sm:px-4 text-sm sm:text-base"
             >
               <Phone className="h-4 w-4 sm:h-5 sm:w-5" />
-              <span className="hidden sm:inline">Llamar</span>
+              <span className="hidden sm:inline">Llámanos</span>
             </Button>
           </div>
 
@@ -120,6 +130,15 @@ export default function Navbar() {
             >
               <House className="h-5 w-5 text-slate-700 group-hover:text-blue-700" />
             </button>
+
+            <button
+              onClick={() => scrollToSection("horario")}
+              className="p-2 rounded-lg hover:bg-slate-100 transition-all duration-300 group"
+              aria-label="Horario"
+            >
+              <ChefHat className="h-5 w-5 text-slate-700 group-hover:text-blue-700" />
+            </button>
+
             <button
               onClick={() => scrollToSection("galeria")}
               className="p-2 rounded-lg hover:bg-slate-100 transition-all duration-300 group"
@@ -153,7 +172,7 @@ export default function Navbar() {
               onClick={makeCall}
               size="sm"
               className="bg-green-600 hover:bg-green-700 text-white transition-all duration-300 hover:scale-105"
-              aria-label="Llamar"
+              aria-label="Llámanos"
             >
               <Phone className="h-4 w-4" />
             </Button>
@@ -189,6 +208,15 @@ export default function Navbar() {
             </button>
 
             <button
+              onClick={() => scrollToSection("horario")}
+              className="group relative flex items-center gap-3 w-full text-left px-3 sm:px-4 py-3 text-slate-700 font-medium transition-all duration-300 hover:text-blue-700 hover:bg-slate-50 cursor-pointer rounded-lg"
+            >
+              <ChefHat className="h-5 w-5 transition-colors duration-300 group-hover:text-blue-700" />
+              <span className="text-base sm:text-lg">Horario</span>
+              <span className="absolute -bottom-1 left-12 h-[2px] w-0 bg-blue-500 transition-all duration-300 group-hover:w-28"></span>
+            </button>
+
+            <button
               onClick={() => scrollToSection("galeria")}
               className="group relative flex items-center gap-3 w-full text-left px-3 sm:px-4 py-3 text-slate-700 font-medium transition-all duration-300 hover:text-blue-700 hover:bg-slate-50 cursor-pointer rounded-lg"
             >
@@ -211,7 +239,7 @@ export default function Navbar() {
               className="group relative flex items-center gap-3 w-full text-left px-3 sm:px-4 py-3 text-slate-700 font-medium transition-all duration-300 hover:text-blue-700 hover:bg-slate-50 cursor-pointer rounded-lg"
             >
               <BadgeInfo className="h-5 w-5 transition-colors duration-300 group-hover:text-blue-700" />
-              <span className="text-base sm:text-lg">Contacto y Horario</span>
+              <span className="text-base sm:text-lg">Contacto</span>
               <span className="absolute -bottom-1 left-12 h-[2px] w-0 bg-blue-500 transition-all duration-300 group-hover:w-36"></span>
             </button>
 
@@ -228,7 +256,7 @@ export default function Navbar() {
                 className="flex-1 bg-green-600 hover:bg-green-700 text-white transition-all duration-300 hover:scale-105 active:scale-95"
               >
                 <Phone className="h-4 w-4 sm:h-5 sm:w-5" />
-                <span className="ml-2 text-sm sm:text-base">Llamar Ahora</span>
+                <span className="ml-2 text-sm sm:text-base">Llámanos Ahora</span>
               </Button>
             </div>
           </div>
