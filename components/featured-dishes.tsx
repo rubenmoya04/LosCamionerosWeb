@@ -28,13 +28,13 @@ const dishes = [
   },
   {
     id: 4,
-name: "Croquetas de Jamón Caseras",
+    name: "Croquetas de Jamón Caseras",
     description: "Deliciosas croquetas de jamón ibérico ",
     image: "/FotosBar/CroquetasJamón.png",
     badge: "Tapas",
 
 
-    
+
   },
   {
     id: 5,
@@ -93,7 +93,7 @@ name: "Croquetas de Jamón Caseras",
     badge: "Premium",
 
 
-    
+
   },
   {
     id: 13,
@@ -290,11 +290,11 @@ export default function FeaturedDishes() {
         onTouchEnd={handleTouchEnd}
       >
         {/* Efectos de fondo decorativos - SIN MOVIMIENTOS QUE CAUSEN ZOOM */}
-        <div className="absolute inset-0 overflow-hidden">
+        {/* <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-20 left-10 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem] rounded-full bg-gradient-to-tr from-blue-300 via-blue-200 to-cyan-300 mix-blend-multiply filter blur-3xl opacity-30" />
           <div className="absolute top-32 right-16 w-56 h-56 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-[26rem] lg:h-[26rem] rounded-full bg-gradient-to-tr from-emerald-300 via-green-200 to-cyan-300 mix-blend-multiply filter blur-3xl opacity-25" />
           <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 w-72 h-72 sm:w-96 sm:h-96 md:w-[24rem] md:h-[24rem] lg:w-[30rem] lg:h-[30rem] rounded-full bg-gradient-to-tr from-cyan-200 via-blue-100 to-emerald-200 mix-blend-multiply filter blur-3xl opacity-20" />
-        </div>
+        </div> */}
 
         <div className="max-w-6xl sm:max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
           {/* Header mejorado con animaciones */}

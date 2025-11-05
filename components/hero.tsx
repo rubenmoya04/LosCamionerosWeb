@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient"
 import Image from "next/image"
 import GradientText from "./GradientText"
-import { Utensils, Phone, Star, ArrowRight, Sparkles,PartyPopper  } from "lucide-react"
+import { Utensils, Phone, Star, ArrowRight, Sparkles, PartyPopper, Clock10 } from "lucide-react"
 
 export default function Hero() {
   const [isVisible, setIsVisible] = useState(false)
@@ -25,6 +25,12 @@ export default function Hero() {
 
   const scrollToPlatos = () => {
     const element = document.getElementById("platos")
+    if (element) element.scrollIntoView({ behavior: "smooth" })
+  }
+
+
+  const scrollToHorario = () => {
+    const element = document.getElementById("horario")
     if (element) element.scrollIntoView({ behavior: "smooth" })
   }
 
@@ -135,7 +141,7 @@ export default function Hero() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
               >
-                Te damos la bienvenida a 
+                Te damos la bienvenida a
               </motion.span>
               <motion.div
                 className="block mt-2 sm:mt-3"
@@ -176,33 +182,50 @@ export default function Hero() {
 
           {/* Botones optimizados - sin hover scale en móvil */}
           <motion.div
-            variants={itemVariants}
-            className="flex flex-col sm:flex-row gap-4 sm:gap-6 lg:gap-8 justify-center items-center px-4 sm:px-6 mb-12 sm:mb-16 lg:mb-20"
-          >
-            <div className="w-full sm:w-auto max-w-xs sm:max-w-none">
-              <HoverBorderGradient
-                containerClassName="rounded-full"
-                as="button"
-                onClick={scrollToPlatos}
-                className="bg-[#4e68ae] backdrop-blur-sm text-white px-8 cursor-pointer py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 text-base sm:text-lg lg:text-xl font-semibold transition-all duration-300 hover:bg-[#354779] hover:shadow-xl flex items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto min-h-[52px] sm:min-h-[56px] lg:min-h-[64px] rounded-full"
-              >
-                <Utensils className="w-5 h-5 sm:w-6 sm:h-6" />
-                <span>Ver Platos</span>
-                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
-              </HoverBorderGradient>
-            </div>
+  variants={itemVariants}
+  className="flex flex-col sm:flex-row gap-4 sm:gap-6 lg:gap-8 justify-center items-center px-4 sm:px-6 mb-12 sm:mb-16 lg:mb-20"
+>
+  {/* Botón Ver Platos */}
+  <div className="w-full sm:w-auto max-w-xs sm:max-w-none">
+    <HoverBorderGradient
+      containerClassName="rounded-full"
+      as="button"
+      onClick={scrollToPlatos}
+      className="bg-gradient-to-r cursor-pointer from-[#4e68ae] via-[#3a5580] to-[#2d4471] text-white px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 text-base sm:text-lg lg:text-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4e68ae] flex items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto min-h-[52px] sm:min-h-[56px] lg:min-h-[64px] rounded-full"
+    >
+      <Utensils className="w-5 h-5 sm:w-6 sm:h-6" />
+      <span>Ver Platos</span>
+      <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+    </HoverBorderGradient>
+  </div>
 
-            <div className="w-full sm:w-auto max-w-xs sm:max-w-none">
-              <Button
-                variant="outline"
-                onClick={makeReservationCall}
-                className="w-full sm:w-auto border-2 border-green-600 bg-[#56bb60] backdrop-blur-sm text-white hover:bg-[#51cf5d] hover:text-white px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 text-base sm:text-lg lg:text-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 sm:gap-4 hover:shadow-xl min-h-[52px] sm:min-h-[56px] lg:min-h-[64px] rounded-full"
-              >
-                <Phone className="w-5 h-5 sm:w-6 sm:h-6" />
-                <span>Llamar Ahora</span>
-              </Button>
-            </div>
-          </motion.div>
+  {/* Botón Ver Horario */}
+  <div className="w-full sm:w-auto max-w-xs sm:max-w-none">
+    <HoverBorderGradient
+      containerClassName="rounded-full"
+      as="button"
+      onClick={scrollToHorario}
+      className="bg-gradient-to-r cursor-pointer from-[#22a3ac] via-[#1d8c8b] to-[#1a7472] text-white px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 text-base sm:text-lg lg:text-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#22a3ac] flex items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto min-h-[52px] sm:min-h-[56px] lg:min-h-[64px] rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#22a3ac]"
+    >
+      <Clock10  className="w-5 h-5 sm:w-6 sm:h-6" />
+      <span>Ver Horario</span>
+      <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+    </HoverBorderGradient>
+  </div>
+
+  {/* Botón Llamar Ahora */}
+  <div className="w-full sm:w-auto max-w-xs sm:max-w-none">
+    <Button
+      variant="outline"
+      onClick={makeReservationCall}
+      className="w-full sm:w-auto border-2 cursor-pointer border-green-600 bg-gradient-to-r from-[#56bb60] via-[#4f9f4b] to-[#3d7e3d] text-white hover:bg-gradient-to-r hover:from-[#51cf5d] hover:to-[#38c57e] hover:text-white px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 text-base sm:text-lg lg:text-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 sm:gap-4 hover:shadow-2xl min-h-[52px] sm:min-h-[56px] lg:min-h-[64px] rounded-full"
+    >
+      <Phone className="w-5 h-5 sm:w-6 sm:h-6" />
+      <span>Llamar Ahora</span>
+    </Button>
+  </div>
+</motion.div>
+
 
           {/* Indicadores optimizados - sin hover scale */}
           <motion.div

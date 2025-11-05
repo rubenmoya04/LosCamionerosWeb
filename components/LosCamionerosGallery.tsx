@@ -8,11 +8,11 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-  
+
 } from "@/components/ui/carousel"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Star, ThumbsUp , UtensilsCrossed, Heart, Camera, ChevronLeft, ChevronRight, Quote, X,MessageSquare,ExternalLink } from "lucide-react"
+import { Star, ThumbsUp, UtensilsCrossed, Heart, Camera, ChevronLeft, ChevronRight, Quote, X, MessageSquare, ExternalLink } from "lucide-react"
 
 export default function LosCamionerosGallery() {
   const [isVisible, setIsVisible] = useState(false)
@@ -220,14 +220,14 @@ export default function LosCamionerosGallery() {
   return (
     <>
       {/* Gallery Carousel Section */}
-            <div className="w-full h-[3px] bg-gradient-to-r from-white-500 via-black/30 to-white-500" />
+      <div className="w-full h-[3px] bg-gradient-to-r from-white-500 via-black/30 to-white-500" />
 
       <section
         ref={galleryRef}
         className="relative py-12 sm:py-16 md:py-20 lg:py-32 opacity-0 transition-opacity duration-1000 "
         id="galeria"
       >
-        
+
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
           {/* Header con animación - responsive */}
           <motion.div
@@ -382,7 +382,7 @@ export default function LosCamionerosGallery() {
                 alt={galleryImages[selectedImageIndex].title}
                 className="w-full h-full object-contain rounded-lg"
               />
-              
+
               {/* Navigation buttons */}
               <button
                 onClick={() => navigateImage('prev')}
@@ -396,7 +396,7 @@ export default function LosCamionerosGallery() {
               >
                 <ChevronRight className="w-6 h-6" />
               </button>
-              
+
               {/* Close button */}
               <button
                 onClick={closeImageModal}
@@ -404,7 +404,7 @@ export default function LosCamionerosGallery() {
               >
                 <X className="w-6 h-6" />
               </button>
-              
+
               {/* Image info */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 rounded-b-lg">
                 <h3 className="text-white text-lg font-bold">{galleryImages[selectedImageIndex].title}</h3>
@@ -414,6 +414,7 @@ export default function LosCamionerosGallery() {
           </motion.div>
         )}
       </AnimatePresence>
+      <div className="w-full h-[3px] bg-gradient-to-r from-white-500 via-black/30 to-white-500" />
 
       {/* Features Section - responsive */}
       <section
@@ -431,7 +432,7 @@ export default function LosCamionerosGallery() {
               <div className="relative">
                 <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-blue-400 to-emerald-500 rounded-full blur-lg opacity-50 animate-pulse"></div>
                 <div className="relative bg-gradient-to-r from-emerald-500 to-blue-400 p-3 sm:p-4 rounded-full shadow-2xl">
-                  <ThumbsUp  className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                  <ThumbsUp className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                 </div>
               </div>
             </motion.div>
@@ -490,7 +491,7 @@ export default function LosCamionerosGallery() {
                     transition-all duration-700 ease-out
                     group-hover:scale-110
                   `}></div>
-                  
+
                   {/* Patrón decorativo de fondo */}
                   <div className="absolute inset-0 opacity-5">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-transparent to-current transform rotate-45 translate-x-16 -translate-y-16"></div>
@@ -524,7 +525,7 @@ export default function LosCamionerosGallery() {
                         transition-all duration-700 ease-out
                         animate-pulse
                       `}></div>
-                      
+
                       {/* Círculo principal */}
                       <div className={`
                         relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24
@@ -538,7 +539,7 @@ export default function LosCamionerosGallery() {
                           {feature.icon}
                         </div>
                       </div>
-                      
+
                       {/* Partículas flotantes */}
                       <div className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-white rounded-full opacity-40 group-hover:opacity-80 transition-opacity duration-300 delay-100"></div>
@@ -555,7 +556,7 @@ export default function LosCamionerosGallery() {
                       `}>
                         {feature.title}
                       </h3>
-                      
+
                       <div className={`
                         inline-flex items-center justify-center
                         px-4 py-2 sm:px-6 sm:py-3
@@ -569,7 +570,7 @@ export default function LosCamionerosGallery() {
                       `}>
                         {isMobile ? feature.mobileStat : feature.stat}
                       </div>
-                      
+
                       <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed max-w-sm mx-auto">
                         {feature.description}
                       </p>
@@ -688,8 +689,8 @@ export default function LosCamionerosGallery() {
                     key={index}
                     onClick={() => setCurrentTestimonial(index)}
                     className={`h-2 sm:h-3 rounded-full transition-all duration-300 ${index === currentTestimonial
-                        ? 'bg-blue-600 w-6 sm:w-8'
-                        : 'bg-gray-300 hover:bg-gray-400 w-2 sm:w-3'
+                      ? 'bg-blue-600 w-6 sm:w-8'
+                      : 'bg-gray-300 hover:bg-gray-400 w-2 sm:w-3'
                       }`}
                     aria-label={`Testimonial ${index + 1}`}
                   />
@@ -711,15 +712,15 @@ export default function LosCamionerosGallery() {
                     <MessageSquare className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                   </div>
                 </div>
-                
+
                 <h3 className="text-lg sm:text-xl font-bold text-gray-800">
                   ¿Ya has compartido tu experiencia?
                 </h3>
-                
+
                 <p className="text-sm sm:text-base text-gray-600 text-center max-w-xs ">
                   Tu opinión nos ayuda a mejorar y a otros clientes a conocernos
                 </p>
-                
+
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -735,12 +736,12 @@ export default function LosCamionerosGallery() {
           </motion.div>
         </div>
 
-      
+
       </section>
 
 
-<div className="w-full h-[3px] bg-gradient-to-r from-white-500 via-black/30 to-white-500" />
-                
+      <div className="w-full h-[3px] bg-gradient-to-r from-white-500 via-black/30 to-white-500" />
+
 
       <style jsx>{`
       @keyframes float {

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Clock, Calendar, X, ChefHat } from 'lucide-react'
+import { Clock, X, ChefHat } from 'lucide-react'
 
 interface DaySchedule {
     day: string
