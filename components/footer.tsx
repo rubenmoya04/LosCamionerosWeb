@@ -127,7 +127,7 @@ const AnimatedBackground: React.FC = () => {
   ]
 
   return (
-    <div className="absolute inset-0 overflow-hidden">
+    <div className="absolute inset-0 overflow-hidden" id="contacto">
       {bubbles.map((bubble, index) => (
         <motion.div
           key={index}

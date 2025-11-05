@@ -36,17 +36,22 @@ const OpeningHours = () => {
         <div className="w-full max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-8 lg:py-12" id='horario'>
             <div className="bg-white rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-xl lg:shadow-2xl p-4 sm:p-6 lg:p-10 border border-blue-100">
                 {/* Title Section */}
-                <div className="text-center mb-6 sm:mb-8 lg:mb-10">
-                    <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-                        <div className="p-2 bg-blue-500 rounded-full">
-                            <Clock className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
+                <div className="text-center mb-8 sm:mb-10 lg:mb-12">
+                    {/* Encabezado con icono y título */}
+                    <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-5">
+                        <div className="p-3 sm:p-4 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-md shadow-blue-200">
+                            <Clock className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-white" />
                         </div>
-                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-900 font-['Montserrat',_sans-serif]" >
+
+                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-blue-900 font-['Montserrat',_sans-serif]">
                             Nuestro Horario
                         </h2>
-
                     </div>
-                    <div className="w-16 sm:w-20 lg:w-24 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent mx-auto rounded-full"></div>
+
+                    {/* Línea decorativa animada */}
+                    <div className="relative w-20 sm:w-24 lg:w-28 h-1 mx-auto overflow-hidden rounded-full">
+                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-blue-600 to-cyan-400 animate-[shine_2.5s_ease-in-out_infinite]" />
+                    </div>
                 </div>
 
                 {/* Schedule Grid */}
@@ -148,10 +153,17 @@ const OpeningHours = () => {
                     </div>
                 </div>
             </div>
-
+            <style jsx>{`
+  @keyframes shine {
+    0% { transform: translateX(-100%); opacity: 0.2; }
+    50% { transform: translateX(0); opacity: 1; }
+    100% { transform: translateX(100%); opacity: 0.2; }
+  }
+`}</style>
         </div>
 
     )
+
 }
 
 export default OpeningHours

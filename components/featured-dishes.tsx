@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { UtensilsCrossed, ChefHat, Flame, PhoneCall, Expand, X, ChevronLeft, ChevronRight } from "lucide-react"
+import { UtensilsCrossed, ChefHat, Flame, PhoneCall, Expand, X, ChevronLeft, ChevronRight,Utensils } from "lucide-react"
 
 const dishes = [
   {
@@ -446,25 +446,39 @@ export default function FeaturedDishes() {
 
           {/* CTA Section */}
           <motion.div
-            variants={itemVariants}
-            className="mt-12 sm:mt-16 md:mt-20 text-center"
-          >
-            <div className="bg-gradient-to-r from-cyan-100 to-blue-100 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-12 max-w-3xl sm:max-w-4xl mx-auto border border-blue-200">
-              <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
-                ¿Listo para disfrutar de nuestras especialidades?
-              </h3>
+  variants={itemVariants}
+  className="mt-12 sm:mt-16 md:mt-20 text-center"
+>
+  <div className="bg-gradient-to-br from-teal-50 via-blue-50 to-cyan-100 rounded-3xl p-5 sm:p-8 md:p-10 lg:p-14 max-w-3xl sm:max-w-4xl mx-auto border border-cyan-200 shadow-lg shadow-blue-100/50">
+    <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-gray-900 mb-4 sm:mb-6 leading-tight font-['Montserrat',_sans-serif]">
+      ¿Te apetece probar algo delicioso hoy?
+    </h3>
 
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center items-center px-2 sm:px-0">
-                <a
-                  href="tel:+34651509877"
-                  className="flex items-center gap-2 sm:gap-4 px-4 sm:px-8 md:px-12 py-2 sm:py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-sm sm:text-base md:text-lg lg:text-xl font-bold rounded-full shadow-lg hover:from-cyan-600 hover:to-blue-600 transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
-                >
-                  <PhoneCall className="w-4 h-4 sm:w-5 sm:h-6 md:w-6 lg:w-8" />
-                  ¡Llámanos!
-                </a>
-              </div>
-            </div>
-          </motion.div>
+    <p className="text-gray-600 text-sm sm:text-base md:text-lg mb-6 sm:mb-8 max-w-2xl mx-auto">
+      Llámanos y reserva tu mesa o haz tu pedido para recoger.  
+      ¡Estaremos encantados de atenderte!
+    </p>
+
+    <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center px-3 sm:px-0">
+      <a
+        href="tel:+34651509877"
+        className="flex items-center gap-2 sm:gap-3 px-6 sm:px-10 md:px-12 py-3 sm:py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-base sm:text-lg font-semibold rounded-full shadow-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+      >
+        <PhoneCall className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
+        <span>Llámanos ahora</span>
+      </a>
+
+      <a
+        href="#platos"
+        className="flex items-center gap-2 sm:gap-3 px-6 sm:px-10 md:px-12 py-3 sm:py-4 bg-white border border-blue-200 text-blue-700 text-base sm:text-lg font-semibold rounded-full shadow-md hover:bg-blue-50 transition-all duration-300 hover:scale-105"
+      >
+        <Utensils className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
+        <span>Ver menú</span>
+      </a>
+    </div>
+  </div>
+</motion.div>
+
         </div>
 
         <style jsx>{`
