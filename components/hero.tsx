@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient"
 import Image from "next/image"
 import GradientText from "./GradientText"
-import { Utensils, Phone, Star, ArrowRight, Sparkles, PartyPopper, Clock10 } from "lucide-react"
+import { Utensils, Phone, Star, ArrowRight, Sparkles, PartyPopper, Clock10,Map  } from "lucide-react"
 
 export default function Hero() {
   const [isVisible, setIsVisible] = useState(false)
@@ -33,6 +33,12 @@ export default function Hero() {
     const element = document.getElementById("horario")
     if (element) element.scrollIntoView({ behavior: "smooth" })
   }
+
+const scrollToUbicación = () => {
+    const element = document.getElementById("ubicación")
+    if (element) element.scrollIntoView({ behavior: "smooth" })
+  }
+
 
   const makeReservationCall = () => {
     window.location.href = "tel:+34651509877"
@@ -191,11 +197,11 @@ export default function Hero() {
       containerClassName="rounded-full"
       as="button"
       onClick={scrollToPlatos}
-      className="bg-gradient-to-r cursor-pointer from-[#4e68ae] via-[#3a5580] to-[#2d4471] text-white px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 text-base sm:text-lg lg:text-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4e68ae] flex items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto min-h-[52px] sm:min-h-[56px] lg:min-h-[64px] rounded-full"
+      className="bg-gradient-to-r cursor-pointer from-[#4e68ae] via-[#3a5580] to-[#2d4471] whitespace-nowrap text-white px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 text-base sm:text-lg lg:text-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4e68ae] flex items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto min-h-[52px] sm:min-h-[56px] lg:min-h-[64px] rounded-full"
     >
-      <Utensils className="w-5 h-5 sm:w-6 sm:h-6" />
+      <Utensils className="w-5 h-5 sm:w-10 sm:h-10" />
       <span>Ver Platos</span>
-      <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+      <ArrowRight className="w-5 h-5 sm:w-10 sm:h-10" />
     </HoverBorderGradient>
   </div>
 
@@ -205,11 +211,24 @@ export default function Hero() {
       containerClassName="rounded-full"
       as="button"
       onClick={scrollToHorario}
-      className="bg-gradient-to-r cursor-pointer from-[#22a3ac] via-[#1d8c8b] to-[#1a7472] text-white px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 text-base sm:text-lg lg:text-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#22a3ac] flex items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto min-h-[52px] sm:min-h-[56px] lg:min-h-[64px] rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#22a3ac]"
+      className="bg-gradient-to-r cursor-pointer from-[#22a3ac] via-[#1d8c8b] to-[#1a7472] whitespace-nowrap text-white px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 text-base sm:text-lg lg:text-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#22a3ac] flex items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto min-h-[52px] sm:min-h-[56px] lg:min-h-[64px] rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#22a3ac]"
     >
-      <Clock10  className="w-5 h-5 sm:w-6 sm:h-6" />
+      <Clock10  className="w-5 h-9 sm:w-10 sm:h-10" />
       <span>Ver Horario</span>
-      <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+      <ArrowRight className="w-5 h-5 sm:w-10 sm:h-10" />
+    </HoverBorderGradient>
+  </div>
+
+  <div className="w-full sm:w-auto max-w-xs sm:max-w-none">
+    <HoverBorderGradient
+      containerClassName="rounded-full"
+      as="button"
+      onClick={scrollToUbicación}
+      className="bg-gradient-to-r cursor-pointer from-[#22a3ac] via-[#1d8c8b] to-[#1a7472] whitespace-nowrap text-white px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 text-base sm:text-lg lg:text-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#22a3ac] flex items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto min-h-[52px] sm:min-h-[56px] lg:min-h-[64px] rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#22a3ac]"
+    >
+      <Map   className="w-9 h-9 sm:w-10 sm:h-10" />
+      <span>Ver Ubicación</span>
+      <ArrowRight className="w-5 h-5 sm:w-10 sm:h-10" />
     </HoverBorderGradient>
   </div>
 
@@ -220,7 +239,7 @@ export default function Hero() {
       onClick={makeReservationCall}
       className="w-full sm:w-auto border-2 cursor-pointer border-green-600 bg-gradient-to-r from-[#56bb60] via-[#4f9f4b] to-[#3d7e3d] text-white hover:bg-gradient-to-r hover:from-[#51cf5d] hover:to-[#38c57e] hover:text-white px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 text-base sm:text-lg lg:text-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 sm:gap-4 hover:shadow-2xl min-h-[52px] sm:min-h-[56px] lg:min-h-[64px] rounded-full"
     >
-      <Phone className="w-5 h-5 sm:w-6 sm:h-6" />
+      <Phone className="w-9 h-9 sm:w-10 sm:h-10" />
       <span>Llamar Ahora</span>
     </Button>
   </div>
