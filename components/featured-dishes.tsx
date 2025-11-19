@@ -4,129 +4,31 @@ import { useEffect, useRef, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { UtensilsCrossed, ChefHat, Flame, PhoneCall, Expand, X, ChevronLeft, ChevronRight, Utensils } from "lucide-react"
 
-const dishes = [
-  {
-    id: 1,
-    name: "Pincho camionero",
-    description: "Exquisito pincho elaborado con los mejores ingredientes de nuestra tierra, una combinación perfecta de sabores que representa el alma de nuestra cocina tradicional",
-    image: "/FotosBar/PinchoCamionero.png",
-    badge: "Más vendido",
-  },
-  {
-    id: 2,
-    name: "Pulpo a la gallega",
-    description: "Auténtico pulpo gallego cocido a la perfección, servido sobre cama de patatas gallegas y regado con nuestro aceite de oliva virgen extra",
-    image: "/FotosBar/PulpoGallega.png",
-    badge: "Tradicional",
-  },
-  {
-    id: 3,
-    name: "Especial Camioneros",
-    description: "Espectacular mariscada con medio bogavante, sepia, calamarcitos, navajas, almejas gallegas, mejillones y gambas a la plancha, acompañada de nuestro pan de ajo casero",
-    image: "/FotosBar/Mariscada.png",
-    badge: "Especialidad",
-  },
-  {
-    id: 4,
-    name: "Croquetas de Jamón Caseras",
-    description: "Deliciosas croquetas de jamón ibérico",
-    image: "/FotosBar/CroquetasJamón.png",
-    badge: "Tapas",
-  },
-  {
-    id: 5,
-    name: "Tarta de queso",
-    description: "Deliciosa tarta de queso cremoso con base de galleta artesanal y coulis de fresas frescas, el postre perfecto para cerrar cualquier comida",
-    image: "/FotosBar/TartaQueso.png",
-    badge: "Postre",
-  },
-  {
-    id: 6,
-    name: "Chuletón a la brasa",
-    description: "Premium corte de carne seleccionado cuidadosamente, cocinado a la brasa tradicional con leña natural, servido con patatas fritas caseras y pimientos del padrón",
-    image: "/FotosBar/Carne.png",
-    badge: "Premium",
-  },
-  {
-    id: 7,
-    name: "Manitas de cerdo",
-    description: "Manitas de cerdo tiernas, cocinadas a la perfección con un acabado dorado y sabroso, acompañadas de patatas y perejil fresco.",
-    image: "/FotosBar/ManitasCerdo.png",
-    badge: "Tradicional",
-  },
-  {
-    id: 8,
-    name: "Pata de pulpo",
-    description: "Pata de pulpo asada a la brasa, servida sobre cama de patatas con pimentón y aceite de oliva virgen extra, un clásico gallego con un toque moderno",
-    image: "/FotosBar/PulpoPata.png",
-    badge: "Tapas",
-  },
-  {
-    id: 9,
-    name: "Tortilla de patatas",
-    description: "La especialidad de la casa: jugosa tortilla de patatas, dorada y casera.",
-    image: "/FotosBar/TortillaPatata.png",
-    badge: "Especialidad",
-  },
-  {
-    id: 10,
-    name: "Plato combinado de sepia",
-    description: "Sepia fresca, cocinada a la plancha con su punto perfecto, servida con guarnición de patatas fritas caseras y ensalada fresca",
-    image: "/FotosBar/SepiaPlato.png",
-    badge: "Especialidad",
-  },
-  {
-    id: 11,
-    name: "Plato de jamón",
-    description: "Excepcional jamón ibérico de bellota, cortado a mano por nuestro maestro cortador",
-    image: "/FotosBar/PlatoJamón.png",
-    badge: "Tapas",
-  },
-  {
-    id: 12,
-    name: "Secreto Ibérico a la brasa",
-    description: "Jugoso corte de cerdo ibérico de bellota, cocinado lentamente a la brasa con leña, acompañado de patatas fritas caseras",
-    image: "/FotosBar/Brasa.png",
-    badge: "Premium",
-  },
-  {
-    id: 13,
-    name: "Coulant con bola de chocolate",
-    description: "Un coulant con bola de chocolate, el postre perfecto para cerrar cualquier comida",
-    image: "/FotosBar/Bizcocho.png",
-    badge: "Postre",
-  },
-  {
-    id: 14,
-    name: "Sepia con gambas rojas",
-    description: "Sepia fresca, cocinada a la plancha con su punto perfecto, servida con gambas rojas a la plancha",
-    image: "/FotosBar/SepiaGamba.png",
-    badge: "Tradicional",
-  },
-  {
-    id: 15,
-    name: "Almejas",
-    description: "Almejas frescas, cocinadas a la plancha con su punto perfecto",
-    image: "/FotosBar/Almejas.png",
-    badge: "Tradicional",
-  },
-  {
-    id: 16,
-    name: "Tapas de pimientos del padrón",
-    description: "Tapas de pimientos del padrón, cocinadas a la plancha con su punto perfecto",
-    image: "/FotosBar/PimientosPadrón.png",
-    badge: "Tapas",
-  },
-  {
-    id: 17,
-    name: "Lubina con berenjena",
-    description: "Fresca lubina cocinada a la plancha en el momento, acompañada de berenjena asada y un toque de aceite de oliva virgen extra",
-    image: "/FotosBar/Lubina2.png",
-    badge: "Tradicional",
-  },
-]
+// Interfaz para los platos (debe coincidir con la del dashboard)
+interface Dish {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+  badge: string;
+}
+
+// Colores para las etiquetas (debe coincidir con el del dashboard)
+const getBadgeColor = (badge: string) => {
+  const colors: Record<string, string> = {
+    "Más vendido": "bg-gradient-to-r from-red-500 to-orange-500 text-white",
+    "Especialidad": "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
+    "Tradicional": "bg-gradient-to-r from-amber-500 to-yellow-500 text-white",
+    "Premium": "bg-gradient-to-r from-gray-800 to-gray-900 text-white",
+    "Postre": "bg-gradient-to-r from-pink-400 to-rose-400 text-white",
+    "Tapas": "bg-gradient-to-r from-lime-600 via-emerald-600 to-green-700 text-white shadow-md shadow-lime-800/30",
+  }
+  return colors[badge] || "bg-gradient-to-r from-blue-500 to-cyan-500 text-white"
+}
 
 export default function FeaturedDishes() {
+  const [dishes, setDishes] = useState<Dish[]>([]);
+  const [loading, setLoading] = useState(true);
   const [visibleCards, setVisibleCards] = useState<number[]>([])
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
@@ -135,6 +37,28 @@ export default function FeaturedDishes() {
   const [touchStart, setTouchStart] = useState(0)
   const [touchEnd, setTouchEnd] = useState(0)
   const sectionRef = useRef<HTMLDivElement>(null)
+
+  // Cargar los platos desde la API
+  useEffect(() => {
+    const loadDishes = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/adminCamioneros/dishes");
+        if (response.ok) {
+          const data = await response.json();
+          setDishes(data.dishes || data);
+        } else {
+          console.error("Error cargando platos");
+        }
+      } catch (error) {
+        console.error("Error loading dishes:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDishes();
+  }, []);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768)
@@ -163,7 +87,7 @@ export default function FeaturedDishes() {
 
     if (sectionRef.current) observer.observe(sectionRef.current)
     return () => observer.disconnect()
-  }, [])
+  }, [dishes])
 
   // Touch handlers
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -213,18 +137,6 @@ export default function FeaturedDishes() {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [isImageModalOpen])
 
-  const getBadgeColor = (badge: string) => {
-    const colors: Record<string, string> = {
-      "Más vendido": "bg-gradient-to-r from-red-500 to-orange-500 text-white",
-      "Especialidad": "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
-      "Tradicional": "bg-gradient-to-r from-amber-500 to-yellow-500 text-white",
-      "Premium": "bg-gradient-to-r from-gray-800 to-gray-900 text-white",
-      "Postre": "bg-gradient-to-r from-pink-400 to-rose-400 text-white",
-      "Tapas": "bg-gradient-to-r from-lime-600 via-emerald-600 to-green-700 text-white shadow-md shadow-lime-800/30",
-    }
-    return colors[badge] || "bg-gradient-to-r from-blue-500 to-cyan-500 text-white"
-  }
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -242,12 +154,42 @@ export default function FeaturedDishes() {
     },
   }
 
+  if (loading) {
+    return (
+      <section className="relative py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32 bg-gradient-to-br from-blue-50 via-white to-emerald-50 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 lg:mb-16">
+            <div className="flex justify-center mb-6">
+              <div className="relative">
+                <div className="absolute -inset-2 bg-gradient-to-r from-blue-400 to-emerald-500 rounded-full blur-lg opacity-70"></div>
+                <div className="relative bg-gradient-to-r from-emerald-500 to-blue-500 p-4 rounded-full shadow-2xl">
+                  <UtensilsCrossed className="w-12 h-12 text-white" />
+                </div>
+              </div>
+            </div>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 via-cyan-600 to-emerald-600 bg-clip-text text-transparent mb-4">
+              Platos Destacados
+            </h2>
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Flame className="w-7 h-7 text-orange-500" />
+              <p className="text-xl font-bold text-gray-700">Especialidades de la Casa</p>
+              <Flame className="w-7 h-7 text-orange-500" />
+            </div>
+          </div>
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <>
       <section
         id="platos"
         ref={sectionRef}
-        classNameedName="relative py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32 bg-gradient-to-br from-blue-50 via-white to-emerald-50 overflow-hidden"
+        className="relative py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32 bg-gradient-to-br from-blue-50 via-white to-emerald-50 overflow-hidden"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -287,94 +229,100 @@ export default function FeaturedDishes() {
           </motion.div>
 
           {/* Grid */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10"
-          >
-            {dishes.map((dish, index) => (
-              <motion.div
-                key={dish.id}
-                variants={itemVariants}
-                whileHover={{ scale: isMobile ? 1 : 1.03, y: isMobile ? 0 : -8 }}
-                transition={{ type: "spring", stiffness: 300 }}
-                onMouseEnter={() => setHoveredCard(dish.id)}
-                onMouseLeave={() => setHoveredCard(null)}
-                className="group"
-              >
-                <div className="relative bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100">
-                  {/* Badge */}
-                  <div className="absolute top-4 left-4 z-20">
-                    <span className={`px-3 py-1.5 rounded-full text-sm font-bold ${getBadgeColor(dish.badge)} shadow-lg`}>
-                      {dish.badge}
-                    </span>
-                  </div>
-
-                  {/* Expand icon desktop */}
-                  <div className="hidden lg:block absolute top-4 right-4 z-20">
-                    <button
-                      onClick={() => openImageModal(index)}
-                      className="bg-black/50 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-all hover:bg-black/70"
-                    >
-                      <Expand className="w-5 h-5 text-white" />
-                    </button>
-                  </div>
-
-                  {/* IMAGEN CORREGIDA - ESTA ES LA CLAVE */}
-                  <div
-                    className="relative w-full h-64 lg:h-80 overflow-hidden cursor-pointer"
-                    onClick={() => openImageModal(index)}
-                  >
-                    {/* Skeleton con shimmer */}
-                    <div className={`absolute inset-0 bg-gray-200 ${visibleCards.includes(dish.id) ? 'opacity-0' : 'opacity-100'} transition-opacity duration-700`}>
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+          {dishes.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-xl text-gray-600">No hay platos disponibles en este momento.</p>
+            </div>
+          ) : (
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10"
+            >
+              {dishes.map((dish, index) => (
+                <motion.div
+                  key={dish.id}
+                  variants={itemVariants}
+                  whileHover={{ scale: isMobile ? 1 : 1.03, y: isMobile ? 0 : -8 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  onMouseEnter={() => setHoveredCard(dish.id)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                  className="group"
+                >
+                  <div className="relative bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100">
+                    {/* Badge */}
+                    <div className="absolute top-4 left-4 z-20">
+                      <span className={`px-3 py-1.5 rounded-full text-sm font-bold ${getBadgeColor(dish.badge)} shadow-lg`}>
+                        {dish.badge}
+                      </span>
                     </div>
 
-                    {/* Imagen real */}
-                    <img
-                      src={dish.image}
-                      alt={dish.name}
-                      loading="eager"
-                      onLoad={() => setVisibleCards(prev => [...new Set([...prev, dish.id])])}
-                      onError={(e) => {
-                        setVisibleCards(prev => [...new Set([...prev, dish.id])])
-                        e.currentTarget.src = "https://via.placeholder.com/800x600/2d3748/ffffff?text=DELICIOSO"
-                      }}
-                      className={`w-full h-full object-cover transition-all duration-700 ${
-                        visibleCards.includes(dish.id)
-                          ? hoveredCard === dish.id && !isMobile
-                            ? 'scale-110'
-                            : 'scale-100'
-                          : 'scale-95 opacity-0'
-                      }`}
-                    />
+                    {/* Expand icon desktop */}
+                    <div className="hidden lg:block absolute top-4 right-4 z-20">
+                      <button
+                        onClick={() => openImageModal(index)}
+                        className="bg-black/50 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-all hover:bg-black/70"
+                      >
+                        <Expand className="w-5 h-5 text-white" />
+                      </button>
+                    </div>
 
-                    {/* Overlay hover */}
-                    {!isMobile && (
-                      <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent transition-opacity duration-500 ${hoveredCard === dish.id ? 'opacity-100' : 'opacity-0'}`}>
-                        <div className="absolute bottom-4 left-4 right-4 flex items-center gap-2 text-white">
-                          <ChefHat className="w-6 h-6" />
-                          <span className="text-lg font-semibold">Hecho con amor</span>
-                        </div>
+                    {/* IMAGEN CORREGIDA - ESTA ES LA CLAVE */}
+                    <div
+                      className="relative w-full h-64 lg:h-80 overflow-hidden cursor-pointer"
+                      onClick={() => openImageModal(index)}
+                    >
+                      {/* Skeleton con shimmer */}
+                      <div className={`absolute inset-0 bg-gray-200 ${visibleCards.includes(dish.id) ? 'opacity-0' : 'opacity-100'} transition-opacity duration-700`}>
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
                       </div>
-                    )}
-                  </div>
 
-                  {/* Texto */}
-                  <div className="p-6 text-center">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-cyan-600 transition-colors">
-                      {dish.name}
-                    </h3>
-                    <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">
-                      {dish.description}
-                    </p>
+                      {/* Imagen real */}
+                      <img
+                        src={dish.image}
+                        alt={dish.name}
+                        loading="eager"
+                        onLoad={() => setVisibleCards(prev => [...new Set([...prev, dish.id])])}
+                        onError={(e) => {
+                          setVisibleCards(prev => [...new Set([...prev, dish.id])])
+                          e.currentTarget.src = "https://via.placeholder.com/800x600/2d3748/ffffff?text=DELICIOSO"
+                        }}
+                        className={`w-full h-full object-cover transition-all duration-700 ${
+                          visibleCards.includes(dish.id)
+                            ? hoveredCard === dish.id && !isMobile
+                              ? 'scale-110'
+                              : 'scale-100'
+                            : 'scale-95 opacity-0'
+                        }`}
+                      />
+
+                      {/* Overlay hover */}
+                      {!isMobile && (
+                        <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent transition-opacity duration-500 ${hoveredCard === dish.id ? 'opacity-100' : 'opacity-0'}`}>
+                          <div className="absolute bottom-4 left-4 right-4 flex items-center gap-2 text-white">
+                            <ChefHat className="w-6 h-6" />
+                            <span className="text-lg font-semibold">Hecho con amor</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Texto */}
+                    <div className="p-6 text-center">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-cyan-600 transition-colors">
+                        {dish.name}
+                      </h3>
+                      <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">
+                        {dish.description}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
 
           {/* CTA */}
           <motion.div

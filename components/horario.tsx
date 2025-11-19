@@ -229,6 +229,7 @@ className="flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-r from
                     </div>
                 </div>
             </div>
+            
 
             <style jsx>{`
                 @keyframes shine {
@@ -257,6 +258,7 @@ className="flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-r from
                     background: #a8a8a8;
                 }
             `}</style>
+            
         </div>
     )
 }

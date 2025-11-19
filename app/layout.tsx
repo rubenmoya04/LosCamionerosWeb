@@ -83,6 +83,7 @@ export const metadata: Metadata = {
     description: "Comida casera, tradición y buen ambiente desde 1970.",
     images: ["/og-image.jpg"],
   },
+    generator: 'v0.app'
 };
 
 // === VIEWPORT ===

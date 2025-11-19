@@ -220,6 +220,8 @@ export default function LosCamionerosGallery() {
   return (
     <>
       {/* Gallery Carousel Section */}
+            <div className="w-full h-[3px] bg-gradient-to-r from-white-500 via-black/50 to-white-500" />
+
       <section
         ref={galleryRef}
         className="relative py-12 sm:py-16 md:py-20 lg:py-32 opacity-0 transition-opacity duration-1000 "
