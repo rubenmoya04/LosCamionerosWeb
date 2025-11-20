@@ -377,88 +377,94 @@ export default function MenuDishesManager() {
     toast.success("ID actualizado");
   };
 
-  const saveDish = async () => {
-    if (!formData.name || !formData.description || !formData.image || !formData.badge) {
-      toast.error("Completa todos los campos requeridos");
-      return;
-    }
+  // Y REEMPLAZA TAMBIÉN saveDish (para que crear/editar también funcione siempre)
+const saveDish = async () => {
+  if (!formData.name || !formData.description || !formData.image || !formData.badge) {
+    toast.error("Completa todos los campos requeridos");
+    return;
+  }
 
-    try {
-      const isNewDish = editingId === -1;
-      const action = isNewDish ? "add" : "update";
-      const dishData = {
-        ...formData,
-        id: formData.id ? parseInt(formData.id.toString()) : 0,
-      };
+  try {
+    const isNewDish = editingId === -1;
+    const action = isNewDish ? "add" : "update";
+    const dishData = {
+      ...formData,
+      id: formData.id ? parseInt(formData.id.toString()) : 0,
+    };
 
-      const response = await fetch("/api/adminCamioneros/dishes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dish: dishData, action }),
-      });
+    const response = await fetch("/api/adminCamioneros/dishes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",  // AQUÍ TAMBIÉN
+      body: JSON.stringify({ dish: dishData, action }),
+    });
 
-      if (response.ok) {
-        const username = localStorage.getItem("adminUsername") || "admin";
-        
-        // Log the action with username
-        await fetch("/api/adminCamioneros/audit-log", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: isNewDish ? "Crear" : "Editar",
-            type: "plato",
-            details: `Plato: ${formData.name}`,
-            username,
-          }),
-        });
-
-        toast.success(`Plato ${isNewDish ? "creado" : "actualizado"} exitosamente`);
-        await loadDishes();
-        closeModal();
-      } else {
-        toast.error("Error guardando plato");
-      }
-    } catch (error) {
-      console.error("[v0] Error saving dish:", error);
-      toast.error("Error al guardar");
-    }
-  };
-
-  const deleteDish = async (id: number) => {
-    if (!confirm("¿Estás seguro de que quieres eliminar este plato?")) return;
-
-    try {
-      const dishName = dishes.find(d => d.id === id)?.name || "";
+    if (response.ok) {
       const username = localStorage.getItem("adminUsername") || "admin";
       
-      const response = await fetch("/api/adminCamioneros/dishes", {
+      await fetch("/api/adminCamioneros/audit-log", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dish: { id }, action: "delete" }),
+        credentials: "include",
+        body: JSON.stringify({
+          action: isNewDish ? "Crear" : "Editar",
+          type: "plato",
+          details: `Plato: ${formData.name}`,
+          username,
+        }),
       });
 
-      if (response.ok) {
-        await fetch("/api/adminCamioneros/audit-log", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "Eliminar",
-            type: "plato",
-            details: `Plato: ${dishName}`,
-            username,
-          }),
-        });
-
-        toast.success("Plato eliminado");
-        await loadDishes();
-      } else {
-        toast.error("Error eliminando plato");
-      }
-    } catch (error) {
-      console.error("[v0] Error deleting dish:", error);
-      toast.error("Error al eliminar");
+      toast.success(`Plato ${isNewDish ? "creado" : "actualizado"} exitosamente`);
+      await loadDishes();
+      closeModal();
+    } else {
+      const error = await response.json();
+      toast.error(error.message || "Error guardando plato");
     }
-  };
+  } catch (error) {
+    console.error("[v0] Error saving dish:", error);
+    toast.error("Error al guardar");
+  }
+};
+
+const deleteDish = async (id: number) => {
+  if (!confirm("¿Estás seguro de que quieres eliminar este plato?")) return;
+
+  try {
+    const dishName = dishes.find(d => d.id === id)?.name || "";
+    const username = localStorage.getItem("adminUsername") || "admin";
+    
+    const response = await fetch("/api/adminCamioneros/dishes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",  // ESTO ES LO QUE FALTABA EN PRODUCCIÓN
+      body: JSON.stringify({ dish: { id }, action: "delete" }),
+    });
+
+    if (response.ok) {
+      await fetch("/api/adminCamioneros/audit-log", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",  // también aquí por si acaso
+        body: JSON.stringify({
+          action: "Eliminar",
+          type: "plato",
+          details: `Plato: ${dishName}`,
+          username,
+        }),
+      });
+
+      toast.success("Plato eliminado");
+      await loadDishes();
+    } else {
+      const error = await response.json();
+      toast.error(error.message || "Error eliminando plato");
+    }
+  } catch (error) {
+    console.error("[v0] Error deleting dish:", error);
+    toast.error("Error al eliminar");
+  }
+};
 
   const handleImageUpload = async (file: File, dishId: number) => {
     if (!file.type.startsWith("image/")) {
