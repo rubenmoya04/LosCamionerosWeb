@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { UtensilsCrossed, User, Lock, Loader2, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { UtensilsCrossed, User, Lock, Loader2, Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -22,19 +22,21 @@ export default function LoginPage() {
     setError(false);
 
     try {
-      const response = await fetch("/adminCamioneros/login", {
+      const response = await fetch("/api/adminCamioneros/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // ← recomendado (aunque no es estrictamente necesario aquí)
         body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
 
       if (response.ok && data.success) {
-        // Guardar username en localStorage (solo para mostrar, no para auth)
         localStorage.setItem("adminUsername", username);
         toast.success("¡Bienvenido al Panel!");
-        router.replace("/adminCamioneros");
+
+        // Full reload para que el middleware vea la cookie
+        window.location.href = "/adminCamioneros";
       } else {
         setError(true);
         toast.error("Usuario o contraseña incorrectos");
@@ -42,7 +44,8 @@ export default function LoginPage() {
       }
     } catch (err) {
       console.error("Error en login:", err);
-      toast.error("Ocurrió un error inesperado. Inténtalo de nuevo.");
+      setError(true);
+      toast.error("Ocurrió un error inesperado.");
     } finally {
       setLoading(false);
     }
