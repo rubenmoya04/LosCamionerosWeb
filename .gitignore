@@ -1,41 +1,56 @@
-# Dependencies
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
+# ═════════════════════════════════════
+# NEXT.JS 14+ + VERCEL (2025) – .gitignore definitivo
+# ═════════════════════════════════════
 
-# Next.js
+# Dependencias
+node_modules/
+pnpm-lock.yaml        # si usas pnpm (tú sí lo usas)
+package-lock.json     # por si alguna vez usaste npm
+yarn.lock             # por si alguna vez usaste yarn
+
+# Builds y cachés de Next.js
 .next/
 out/
+dist/
 build/
 
 # Vercel
 .vercel
 
-# Environment variables
+# Variables de entorno (¡NUNCA subir credenciales!)
 .env
-.env*.local
 .env.local
 .env.development.local
-.env.test.local
 .env.production.local
+.env.test.local
+.env*.local
+
+# Solo si quieres un ejemplo público (opcional, recomendado)
+!.env.example
 
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
 
-# Logs
-logs
+# Logs y datos de ejecución
 *.log
-
-# Runtime data
-pids
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+pids/
 *.pid
 *.seed
 *.pid.lock
 
-# IDE / Editor
+# Carpetas temporales
+.tmp/
+.temp/
+temp/
+tmp/
+
+# IDEs y editores
 .vscode/
 .idea/
 *.suo
@@ -44,16 +59,33 @@ pids
 *.sln
 *.sw?
 
-# OS
+# Sistema operativo
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
-# Uploads de usuarios (¡importantísimo!)
-/public/uploads/
-/public/uploads/*
-!/public/uploads/.gitkeep   # opcional: si quieres que la carpeta exista vacía en el repo
+# Uploads de usuarios → NUNCA subir fotos/imágenes subidas por usuarios
+public/uploads/
+public/uploads/**
+# Pero mantenemos la carpeta vacía en el repo para que Vercel la cree
+!public/uploads/.gitkeep
 
-# Opcional pero recomendado
-/dist/
-/tmp/
-/temp/
+# Otras cosas que a veces aparecen en proyectos Next
+.env.backup
+.env.save
+.env.old
+
+# Cache de ESLint, Prettier, etc.
+.eslintcache
+.prettiercache
+
+# Vercel Analytics (si lo usas)
+.vercel_build_output/
+
+# Opcional: si usas Storybook, tests, etc.
+.storybook/
+coverage/

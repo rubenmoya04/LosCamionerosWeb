@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,79 +8,58 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { UtensilsCrossed, User, Lock, Loader2, Eye, EyeOff, AlertCircle } from 'lucide-react';
 
-const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "admin";
-
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(false); // Nuevo estado para la animación de error
+  const [error, setError] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(false); // Reseteamos el error al intentar de nuevo
+    setError(false);
 
     try {
-      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-        // 1. Guardamos el token y el nombre de usuario
-        localStorage.setItem("adminToken", "true");
+      const response = await fetch("/adminCamioneros/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        // Guardar username en localStorage (solo para mostrar, no para auth)
         localStorage.setItem("adminUsername", username);
-
-        // 2. Lanzamos el registro de auditoría en segundo plano
-        fetch("/api/adminCamioneros/audit-log", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "Login",
-            type: "sesion",
-            details: `Usuario: ${username}`,
-          }),
-        }).catch(error => {
-          console.error("[v0] Error (no crítico) en audit-log:", error);
-        });
-
-        // 3. Mostramos feedback de éxito
         toast.success("¡Bienvenido al Panel!");
-        
-        // 4. Redirigimos
         router.replace("/adminCamioneros");
-
       } else {
-        // Si las credenciales son incorrectas
-        setError(true); // Activamos la animación de error
+        setError(true);
         toast.error("Usuario o contraseña incorrectos");
-        setPassword(""); // Limpiamos la contraseña
+        setPassword("");
       }
     } catch (err) {
-      console.error("Error inesperado en el login:", err);
+      console.error("Error en login:", err);
       toast.error("Ocurrió un error inesperado. Inténtalo de nuevo.");
     } finally {
-      // 5. SIEMPRE restablecemos el estado de carga, haya éxito o error
       setLoading(false);
     }
   };
 
   return (
     <>
-      {/* Fondo animado y visual */}
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 overflow-hidden">
-        {/* Bolas animadas de fondo */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="blob blob-1"></div>
           <div className="blob blob-2"></div>
           <div className="blob blob-3"></div>
         </div>
 
-        {/* Tarjeta de Login con animación de entrada y error */}
-        <Card className={`w-full max-w-md shadow-2xl border-slate-700 bg-slate-800/90 backdrop-blur-sm transform transition-all duration-500 ${
-          error ? "animate-shake" : "animate-fade-in"
-        }`}>
+        <Card className={`w-full max-w-md shadow-2xl border-slate-700 bg-slate-800/90 backdrop-blur-sm transform transition-all duration-500 ${error ? "animate-shake" : "animate-fade-in"
+          }`}>
           <div className="p-8">
-            {/* Header */}
             <div className="text-center mb-8">
               <div className="flex justify-center mb-6">
                 <div className="p-3 bg-slate-700 rounded-full shadow-lg transform transition-transform duration-300 hover:scale-110">
@@ -93,9 +72,7 @@ export default function LoginPage() {
               <p className="text-slate-400 text-sm">Panel de Administración</p>
             </div>
 
-            {/* Formulario */}
             <form onSubmit={handleLogin} className="space-y-6">
-              {/* Campo de Usuario */}
               <div>
                 <label htmlFor="username" className="text-sm font-medium text-slate-300">
                   Usuario
@@ -115,7 +92,6 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {/* Campo de Contraseña */}
               <div>
                 <label htmlFor="password" className="text-sm font-medium text-slate-300">
                   Contraseña
@@ -143,7 +119,6 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {/* Botón de Login */}
               <Button
                 type="submit"
                 disabled={loading}
@@ -159,7 +134,7 @@ export default function LoginPage() {
                   "Entrar al Panel"
                 )}
               </Button>
-              
+
               <Button
                 type="button"
                 onClick={() => router.push("/")}
@@ -176,7 +151,6 @@ export default function LoginPage() {
         </Card>
       </div>
 
-      {/* Estilos para las animaciones */}
       <style jsx>{`
         @keyframes float {
           0%, 100% { transform: translate(0, 0) scale(1); }

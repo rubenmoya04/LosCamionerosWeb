@@ -1,43 +1,30 @@
+// app/adminCamioneros/page.tsx ← VERSIÓN 100% FUNCIONAL
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import AdminDashboard from "@/components/admin/dashboard";
 import { toast } from "sonner";
 
 export default function AdminPage() {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Check if user is authenticated
-    const token = localStorage.getItem("adminToken");
-    if (!token) {
-      router.push("/adminCamioneros/login");
-      return;
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("/adminCamioneros/auth-logout", {
+        method: "POST"
+      }); // ← QUITA LA COMA Y EL PARÉNTESIS EXTRA
+
+      if (response.ok) {
+        toast.success("¡Sesión cerrada correctamente!");
+        router.replace("/adminCamioneros/auth-login"); // ← también actualiza aquí la ruta
+      } else {
+        toast.error("Error al cerrar la sesión.");
+      }
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+      toast.error("Ocurrió un error inesperado.");
     }
-    setIsAuthenticated(true);
-    setLoading(false);
-  }, [router]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("adminToken");
-    toast.success("Sesión cerrada");
-    router.push("/adminCamioneros/login");
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Cargando...</p>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return null;
-  }
 
   return <AdminDashboard onLogout={handleLogout} />;
 }

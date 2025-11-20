@@ -529,7 +529,7 @@ export default function MenuDishesManager() {
         </div>
         <Button
           onClick={startNewDish}
-          className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold h-12 px-6"
+          className="bg-gradient-to-r from-[#486399] to-[#1A202C]  hover:from-[#2e384c] hover:to-[#486399] text-white font-bold h-12 px-6 hover:scale-102 transition-all duration-300"
         >
           <Plus className="w-5 h-5 mr-2" />
           Añadir Plato
