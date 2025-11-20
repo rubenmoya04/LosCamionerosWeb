@@ -431,38 +431,19 @@ const deleteDish = async (id: number) => {
   if (!confirm("¿Estás seguro de que quieres eliminar este plato?")) return;
 
   try {
-    const dishName = dishes.find(d => d.id === id)?.name || "";
-    const username = localStorage.getItem("adminUsername") || "admin";
-    
-    const response = await fetch("/api/adminCamioneros/dishes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",  // ESTO ES LO QUE FALTABA EN PRODUCCIÓN
-      body: JSON.stringify({ dish: { id }, action: "delete" }),
+    const res = await fetch(`/api/adminCamioneros/dishes/${id}`, {
+      method: "DELETE",
+      credentials: "include",   // ← ESTO ES LO QUE FALTABA EN PRODUCCIÓN
     });
 
-    if (response.ok) {
-      await fetch("/api/adminCamioneros/audit-log", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",  // también aquí por si acaso
-        body: JSON.stringify({
-          action: "Eliminar",
-          type: "plato",
-          details: `Plato: ${dishName}`,
-          username,
-        }),
-      });
-
+    if (res.ok) {
       toast.success("Plato eliminado");
       await loadDishes();
     } else {
-      const error = await response.json();
-      toast.error(error.message || "Error eliminando plato");
+      toast.error("Error al eliminar");
     }
-  } catch (error) {
-    console.error("[v0] Error deleting dish:", error);
-    toast.error("Error al eliminar");
+  } catch (err) {
+    toast.error("Error de conexión");
   }
 };
 
