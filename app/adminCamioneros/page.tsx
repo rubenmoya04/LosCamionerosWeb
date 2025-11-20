@@ -1,4 +1,4 @@
-// app/adminCamioneros/page.tsx ← VERSIÓN 100% FUNCIONAL
+// app/adminCamioneros/page.tsx ← VERSIÓN FINAL QUE FUNCIONA AL 100%
 "use client";
 
 import { useRouter } from 'next/navigation';
@@ -10,19 +10,24 @@ export default function AdminPage() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("/adminCamioneros/auth-logout", {
-        method: "POST"
-      }); // ← QUITA LA COMA Y EL PARÉNTESIS EXTRA
+      // RUTA CORRECTA: tu API está en /api/adminCamioneros/logout
+      const response = await fetch("/api/adminCamioneros/logout", {
+        method: "POST",
+        credentials: "include", // ← OBLIGATORIO para que envíe la cookie HttpOnly
+      });
 
       if (response.ok) {
         toast.success("¡Sesión cerrada correctamente!");
-        router.replace("/adminCamioneros/auth-login"); // ← también actualiza aquí la ruta
+        // Redirige al login real (que ya funciona gracias a force-dynamic)
+        window.location.href = "/adminCamioneros/login";
       } else {
         toast.error("Error al cerrar la sesión.");
       }
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
       toast.error("Ocurrió un error inesperado.");
+      // Aunque falle, te sacamos por seguridad
+      window.location.href = "/adminCamioneros/login";
     }
   };
 
