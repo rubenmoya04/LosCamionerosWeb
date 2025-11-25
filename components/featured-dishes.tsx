@@ -1,22 +1,9 @@
 "use client"
 
-import type React from "react"
-
 import { useEffect, useRef, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import {
-  UtensilsCrossed,
-  ChefHat,
-  Flame,
-  PhoneCall,
-  Expand,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  Utensils,
-} from "lucide-react"
+import { motion } from "framer-motion"
+import { UtensilsCrossed, Flame, PhoneCall, X, ChevronLeft, ChevronRight, Utensils } from "lucide-react"
 
-// Interfaz para los platos (debe coincidir con la del dashboard)
 interface Dish {
   id: number
   name: string
@@ -25,7 +12,6 @@ interface Dish {
   badge: string
 }
 
-// Colores para las etiquetas (debe coincidir con el del dashboard)
 const getBadgeColor = (badge: string) => {
   const colors: Record<string, string> = {
     "Más vendido": "bg-gradient-to-r from-red-500 to-orange-500 text-white",
@@ -42,161 +28,70 @@ export default function FeaturedDishes() {
   const [dishes, setDishes] = useState<Dish[]>([])
   const [loading, setLoading] = useState(true)
   const [visibleCards, setVisibleCards] = useState<number[]>([])
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false)
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
-  const [isMobile, setIsMobile] = useState(false)
-  const [touchStart, setTouchStart] = useState(0)
-  const [touchEnd, setTouchEnd] = useState(0)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedIndex, setSelectedIndex] = useState(0)
   const sectionRef = useRef<HTMLDivElement>(null)
 
-  // Cargar los platos desde la API
   useEffect(() => {
-    const loadDishes = async () => {
+    const load = async () => {
       try {
         setLoading(true)
-        const response = await fetch("/api/adminCamioneros/dishes")
-        if (response.ok) {
-          const data = await response.json()
-          const dishesArray = Array.isArray(data) ? data : data.dishes || data
-          if (Array.isArray(dishesArray) && dishesArray.length > 0) {
-            setDishes(dishesArray)
-          } else {
-            console.error("Invalid dishes data format")
-            setDishes([])
-          }
-        } else {
-          console.error("Error cargando platos")
-          setDishes([])
+        const res = await fetch("/api/adminCamioneros/dishes")
+        if (res.ok) {
+          const data = await res.json()
+          setDishes(data.dishes || data)
         }
-      } catch (error) {
-        console.error("Error loading dishes:", error)
-        setDishes([])
+      } catch (e) {
+        console.error(e)
       } finally {
         setLoading(false)
       }
     }
-
-    loadDishes()
-  }, [])
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768)
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
-    return () => window.removeEventListener("resize", checkMobile)
+    load()
   }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // Forzamos que TODAS las cards se marquen como visibles al entrar en viewport
-            dishes.forEach((dish, index) => {
-              setTimeout(() => {
-                setVisibleCards((prev) => [...prev, dish.id])
-              }, index * 100)
-            })
-            observer.disconnect()
-          }
-        })
-      },
-      { threshold: 0.1 },
+      ([e]) => e?.isIntersecting && dishes.forEach((d, i) => setTimeout(() => setVisibleCards(p => [...p, d.id]), i * 100)),
+      { threshold: 0.1 }
     )
-
-    if (sectionRef.current) observer.observe(sectionRef.current)
+    sectionRef.current && observer.observe(sectionRef.current)
     return () => observer.disconnect()
   }, [dishes])
 
-  // Touch handlers
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(0)
-    setTouchStart(e.targetTouches[0].clientX)
-  }
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX)
-  }
-
-  const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return
-    const distance = touchStart - touchEnd
-    const isLeftSwipe = distance > 50
-    const isRightSwipe = distance < -50
-
-    if (isLeftSwipe && isImageModalOpen) navigateImage("next")
-    if (isRightSwipe && isImageModalOpen) navigateImage("prev")
-  }
-
-  // Modal handlers
-  const openImageModal = (index: number) => {
-    setSelectedImageIndex(index)
-    setIsImageModalOpen(true)
+  const openModal = (i: number) => {
+    setSelectedIndex(i)
+    setIsModalOpen(true)
     document.body.style.overflow = "hidden"
   }
 
-  const closeImageModal = () => {
-    setIsImageModalOpen(false)
-    document.body.style.overflow = "unset"
+  const closeModal = () => {
+    setIsModalOpen(false)
+    document.body.style.overflow = ""
   }
 
-  const navigateImage = (direction: "prev" | "next") => {
-    setSelectedImageIndex((prev) =>
-      direction === "prev" ? (prev - 1 + dishes.length) % dishes.length : (prev + 1) % dishes.length,
-    )
+  const goTo = (i: number) => {
+    const normalized = ((i % dishes.length) + dishes.length) % dishes.length
+    setSelectedIndex(normalized)
   }
 
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isImageModalOpen) closeImageModal()
-    }
-    document.addEventListener("keydown", handleEscape)
-    return () => document.removeEventListener("keydown", handleEscape)
-  }, [isImageModalOpen])
+  const prev = () => goTo(selectedIndex - 1)
+  const next = () => goTo(selectedIndex + 1)
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: isMobile ? 0.1 : 0.15, delayChildren: 0.2 },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.7, type: "spring", stiffness: 100 },
-    },
+  // Swipe con inercia real y SIN AnimatePresence dentro del drag
+  const handleDragEnd = (e: any, { offset, velocity }: { offset: { x: number }, velocity: { x: number } }) => {
+    if (offset.x < -80 || velocity.x < -500) next()
+    else if (offset.x > 80 || velocity.x > 500) prev()
   }
 
   if (loading) {
     return (
-      <section className="relative py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32 bg-gradient-to-br from-blue-50 via-white to-emerald-50 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 lg:mb-16">
-            <div className="flex justify-center mb-6">
-              <div className="relative">
-                <div className="absolute -inset-2 bg-gradient-to-r from-blue-400 to-emerald-500 rounded-full blur-lg opacity-70"></div>
-                <div className="relative bg-gradient-to-r from-emerald-500 to-blue-500 p-4 rounded-full shadow-2xl">
-                  <UtensilsCrossed className="w-12 h-12 text-white" />
-                </div>
-              </div>
-            </div>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 via-cyan-600 to-emerald-600 bg-clip-text text-transparent mb-4">
-              Platos Destacados
-            </h2>
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <Flame className="w-7 h-7 text-orange-500" />
-              <p className="text-xl font-bold text-gray-700">Especialidades de la Casa</p>
-              <Flame className="w-7 h-7 text-orange-500" />
-            </div>
-          </div>
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-          </div>
+      <section className="py-24 bg-gradient-to-br from-blue-50 via-white to-emerald-50">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <UtensilsCrossed className="w-20 h-20 mx-auto mb-6 text-cyan-600 animate-pulse" />
+          <h3 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
+            Preparando nuestros platos...
+          </h3>
         </div>
       </section>
     )
@@ -204,278 +99,270 @@ export default function FeaturedDishes() {
 
   return (
     <>
-      <section
-        id="platos"
-        ref={sectionRef}
-        className="relative py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32 bg-gradient-to-br from-blue-50 via-white to-emerald-50 overflow-hidden"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
+      {/* === SECCIÓN PRINCIPAL === */}
+      <section ref={sectionRef} className="py-16 lg:py-24 bg-gradient-to-br from-blue-50 via-white to-emerald-50" id="platos">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={containerVariants}
-            className="text-center mb-12 lg:mb-16"
-          >
-            <motion.div variants={itemVariants} className="flex justify-center mb-6">
-              <div className="relative">
-                <div className="absolute -inset-2 bg-gradient-to-r from-blue-400 to-emerald-500 rounded-full blur-lg opacity-70"></div>
-                <div className="relative bg-gradient-to-r from-emerald-500 to-blue-500 p-4 rounded-full shadow-2xl">
-                  <UtensilsCrossed className="w-12 h-12 text-white" />
-                </div>
-              </div>
-            </motion.div>
+          <div className="text-center mb-16 relative overflow-hidden">
+  {/* Fondo decorativo con gradiente radial */}
+  <div className="absolute inset-0 bg-gradient-to-b from-blue-50/20 via-transparent to-transparent -z-10 rounded-3xl"></div>
+  <div className="absolute inset-0 bg-gradient-radial from-cyan-100/10 via-transparent to-transparent -z-10"></div>
+  
+  {/* Icono principal con efectos mejorados */}
+  <div className="flex justify-center mb-8">
+    <div className="relative group">
+      {/* Anillos concéntricos animados */}
+      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400 to-emerald-500 blur-xl opacity-60 scale-110 group-hover:scale-125 transition-transform duration-500"></div>
+      <div className="absolute inset-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 blur-lg opacity-40 scale-105 group-hover:scale-115 transition-transform duration-700"></div>
+      
+      {/* Círculo principal con efecto de brillo */}
+      <div className="relative bg-gradient-to-br from-emerald-500 via-blue-500 to-cyan-600 p-8 rounded-full shadow-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:rotate-3">
+        {/* Efecto de brillo interno */}
+        <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+        
+        {/* Icono con animación sutil */}
+        <motion.div
+          animate={{ rotate: [0, 5, 0, -5, 0] }}
+          transition={{ duration: 8, repeat: Infinity, repeatType: "loop", ease: "easeInOut" }}
+        >
+          <UtensilsCrossed className="w-20 h-20 text-white drop-shadow-lg" />
+        </motion.div>
+      </div>
+    </div>
+  </div>
+  
+  {/* Título con efecto de escritura */}
+  <div className="overflow-hidden mb-4">
+    <motion.h2 
+      initial={{ y: 50, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8, delay: 0.2 }}
+      className="text-4xl sm:text-5xl lg:text-7xl font-bold bg-gradient-to-r from-blue-600 via-cyan-600 to-emerald-600 bg-clip-text text-transparent leading-tight"
+    >
+      Platos Destacados
+    </motion.h2>
+  </div>
+  
+  {/* Subtítulo con iconos animados */}
+  <motion.div 
+    initial={{ y: 30, opacity: 0 }}
+    animate={{ y: 0, opacity: 1 }}
+    transition={{ duration: 0.8, delay: 0.4 }}
+    className="flex items-center justify-center gap-4 mb-6"
+  >
+    <motion.div
+      animate={{ scale: [1, 1.2, 1] }}
+      transition={{ duration: 2, repeat: Infinity, repeatType: "loop" }}
+    >
+      <Flame className="w-10 h-10 text-orange-500 drop-shadow-md" />
+    </motion.div>
+    
+    <div className="relative">
+      <p className="text-2xl sm:text-3xl font-bold text-gray-800">Especialidades de la Casa</p>
+      {/* Subrayado animado */}
+      <motion.div 
+        initial={{ width: 0 }}
+        animate={{ width: "100%" }}
+        transition={{ duration: 1, delay: 0.8 }}
+        className="absolute -bottom-1 left-0 h-1 bg-gradient-to-r from-orange-400 to-red-500 rounded-full"
+      ></motion.div>
+    </div>
+    
+    <motion.div
+      animate={{ scale: [1, 1.2, 1] }}
+      transition={{ duration: 2, repeat: Infinity, repeatType: "loop", delay: 1 }}
+    >
+      <Flame className="w-10 h-10 text-orange-500 drop-shadow-md" />
+    </motion.div>
+  </motion.div>
+  
+  {/* Texto descriptivo añadido */}
+  <motion.div 
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 1, delay: 0.6 }}
+    className="max-w-2xl mx-auto mb-8 px-4"
+  >
+    <p className="text-lg text-gray-600 leading-relaxed">
+      Descubre nuestras creaciones culinarias, donde cada plato cuenta una historia de tradición, 
+      pasión y los ingredientes más frescos del mercado. Una experiencia gastronómica que deleitará tus sentidos.
+    </p>
+  </motion.div>
+  
+  {/* Frase destacada con animación de aparición */}
+  <motion.div 
+    initial={{ scale: 0.9, opacity: 0 }}
+    animate={{ scale: 1, opacity: 1 }}
+    transition={{ duration: 0.8, delay: 0.8 }}
+    className="inline-block mb-8"
+  >
+    <div className="bg-gradient-to-r from-blue-50 to-emerald-50 rounded-full px-6 py-3 border border-blue-200 shadow-md">
+      <p className="text-blue-700 font-semibold text-lg">
+        "El sabor que te transporta a los caminos de la tradición"
+      </p>
+    </div>
+  </motion.div>
+  
+  {/* Línea decorativa con puntos y elementos animados */}
+  <div className="flex justify-center items-center gap-2">
+    <motion.div 
+      initial={{ width: 0 }}
+      animate={{ width: "4rem" }}
+      transition={{ duration: 1, delay: 1 }}
+      className="h-px bg-gradient-to-r from-transparent to-blue-300"
+    ></motion.div>
+    
+    <div className="flex gap-1">
+      {["bg-blue-400", "bg-cyan-400", "bg-emerald-400"].map((color, i) => (
+        <motion.div
+          key={i}
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.3, delay: 1 + i * 0.1 }}
+          className={`w-2 h-2 ${color} rounded-full`}
+        ></motion.div>
+      ))}
+    </div>
+    
+    <motion.div 
+      initial={{ width: 0 }}
+      animate={{ width: "4rem" }}
+      transition={{ duration: 1, delay: 1 }}
+      className="h-px bg-gradient-to-l from-transparent to-emerald-300"
+    ></motion.div>
+  </div>
+</div>
 
-            <motion.h2
-              variants={itemVariants}
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 via-cyan-600 to-emerald-600 bg-clip-text text-transparent mb-4"
-            >
-              Platos Destacados
-            </motion.h2>
-
-            <motion.div variants={itemVariants} className="flex items-center justify-center gap-3 mb-4">
-              <Flame className="w-7 h-7 text-orange-500" />
-              <p className="text-xl font-bold text-gray-700">Especialidades de la Casa</p>
-              <Flame className="w-7 h-7 text-orange-500" />
-            </motion.div>
-
-            <motion.p variants={itemVariants} className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Descubre nuestra selección de especialidades preparadas con ingredientes frescos y recetas tradicionales.
-              Cada plato es una obra de arte culinaria creada con pasión y dedicación.
-            </motion.p>
-          </motion.div>
-
-          {/* Grid */}
-          {dishes.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-xl text-gray-600">No hay platos disponibles en este momento.</p>
-            </div>
-          ) : (
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10"
-            >
-              {dishes.map((dish, index) => (
-                <motion.div
-                  key={dish.id}
-                  variants={itemVariants}
-                  whileHover={{ scale: isMobile ? 1 : 1.03, y: isMobile ? 0 : -8 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                  onMouseEnter={() => setHoveredCard(dish.id)}
-                  onMouseLeave={() => setHoveredCard(null)}
-                  className="group"
-                >
-                  <div className="relative bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100">
-                    {/* Badge */}
-                    <div className="absolute top-4 left-4 z-20">
-                      <span
-                        className={`px-3 py-1.5 rounded-full text-sm font-bold ${getBadgeColor(dish.badge)} shadow-lg`}
-                      >
-                        {dish.badge}
-                      </span>
-                    </div>
-
-                    {/* Expand icon desktop */}
-                    <div className="hidden lg:block absolute top-4 right-4 z-20">
-                      <button
-                        onClick={() => openImageModal(index)}
-                        className="bg-black/50 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-all hover:bg-black/70"
-                      >
-                        <Expand className="w-5 h-5 text-white" />
-                      </button>
-                    </div>
-
-                    {/* IMAGEN CORREGIDA - ESTA ES LA CLAVE */}
-                    <div
-                      className="relative w-full h-64 lg:h-80 overflow-hidden cursor-pointer"
-                      onClick={() => openImageModal(index)}
-                    >
-                      {/* Skeleton con shimmer */}
-                      <div
-                        className={`absolute inset-0 bg-gray-200 ${visibleCards.includes(dish.id) ? "opacity-0" : "opacity-100"} transition-opacity duration-700`}
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
-                      </div>
-
-                      {/* Imagen real */}
-                      <img
-                        src={dish.image || "/placeholder.svg"}
-                        alt={dish.name}
-                        loading="eager"
-                        onLoad={() => setVisibleCards((prev) => [...new Set([...prev, dish.id])])}
-                        onError={(e) => {
-                          setVisibleCards((prev) => [...new Set([...prev, dish.id])])
-                          e.currentTarget.src = "https://via.placeholder.com/800x600/2d3748/ffffff?text=DELICIOSO"
-                        }}
-                        className={`w-full h-full object-cover transition-all duration-700 ${
-                          visibleCards.includes(dish.id)
-                            ? hoveredCard === dish.id && !isMobile
-                              ? "scale-110"
-                              : "scale-100"
-                            : "scale-95 opacity-0"
-                        }`}
-                      />
-
-                      {/* Overlay hover */}
-                      {!isMobile && (
-                        <div
-                          className={`absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent transition-opacity duration-500 ${hoveredCard === dish.id ? "opacity-100" : "opacity-0"}`}
-                        >
-                          <div className="absolute bottom-4 left-4 right-4 flex items-center gap-2 text-white">
-                            <ChefHat className="w-6 h-6" />
-                            <span className="text-lg font-semibold">Hecho con amor</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Texto */}
-                    <div className="p-6 text-center">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-cyan-600 transition-colors">
-                        {dish.name}
-                      </h3>
-                      <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">{dish.description}</p>
-                    </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8" >
+            {dishes.map((dish, i) => (
+              <motion.div
+                key={dish.id}
+                initial={{ opacity: 0, y: 40 }}
+                animate={visibleCards.includes(dish.id) ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.7, delay: i * 0.1 }}
+                whileHover={{ y: -12 }}
+                onClick={() => openModal(i)}
+                className="group cursor-pointer"
+              >
+                <div className="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100">
+                  <div className="absolute top-4 left-4 z-10">
+                    <span className={`px-4 py-2 rounded-full text-sm font-bold ${getBadgeColor(dish.badge)} shadow-lg`}>
+                      {dish.badge}
+                    </span>
                   </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
 
-          {/* CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-            className="mt-20 text-center"
-          >
-            <div className="bg-gradient-to-br from-teal-50 via-blue-50 to-cyan-100 rounded-3xl p-10 max-w-4xl mx-auto border border-cyan-200 shadow-2xl">
-              <h3 className="text-3xl lg:text-4xl font-extrabold text-gray-900 mb-6">
-                ¿Te apetece probar algo delicioso hoy?
-              </h3>
-              <p className="text-gray-600 text-lg mb-8">
-                Llámanos y reserva tu mesa o haz tu pedido para recoger. ¡Estaremos encantados de atenderte!
-              </p>
+                  <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+                    <div className={`absolute inset-0 bg-gray-200 ${visibleCards.includes(dish.id) ? 'opacity-0' : 'opacity-100'} transition-opacity duration-1000`}>
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
+                    </div>
+                    <img
+                      src={dish.image}
+                      alt={dish.name}
+                      onLoad={() => setVisibleCards(p => [...new Set([...p, dish.id])])}
+                      onError={e => { e.currentTarget.src = "https://via.placeholder.com/800x600/1f2937/ffffff?text=DELICIOSO" }}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                  </div>
+
+                  <div className="p-6 text-center">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-cyan-600 transition-colors">
+                      {dish.name}
+                    </h3>
+                    <p className="text-gray-600 line-clamp-3">{dish.description}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-20 text-center">
+            <div className="inline-block bg-gradient-to-br from-teal-50 via-blue-50 to-cyan-100 rounded-3xl p-10 border border-cyan-200 shadow-2xl">
+              <h3 className="text-4xl font-extrabold mb-6">¿Listo para probar?</h3>
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                <a
-                  href="tel:+34651509877"
-                  className="flex items-center justify-center gap-3 px-12 py-5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-lg font-bold rounded-full hover:from-blue-600 hover:to-cyan-700 transition-all hover:scale-105 shadow-xl"
-                >
-                  <PhoneCall className="w-7 h-7" />
-                  Llámanos ahora
+                <a href="tel:+34651509877" className="flex items-center justify-center gap-3 px-10 py-5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xl font-bold rounded-full hover:scale-110 transition-all shadow-xl">
+                  <PhoneCall className="w-8 h-8" /> Llamar ahora
                 </a>
-                <a
-                  href="#platos"
-                  className="flex items-center justify-center gap-3 px-12 py-5 bg-white border-2 border-blue-500 text-blue-700 text-lg font-bold rounded-full hover:bg-blue-50 transition-all hover:scale-105"
-                >
-                  <Utensils className="w-7 h-7" />
-                  Ver menú completo
+                <a href="#platos" className="flex items-center justify-center gap-3 px-10 py-5 bg-white border-4 border-blue-600 text-blue-600 text-xl font-bold rounded-full hover:bg-blue-50 transition-all">
+                  <Utensils className="w-8 h-8" /> Ver menú
                 </a>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         <style jsx>{`
           @keyframes shimmer {
-            0% { transform: translateX(-100%) }
-            100% { transform: translateX(100%) }
+            0% { transform: translateX(-150%) }
+            100% { transform: translateX(150%) }
           }
-          .animate-shimmer {
-            animation: shimmer 2s infinite linear;
-          }
-          .line-clamp-3 {
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-          }
+          .animate-shimmer { animation: shimmer 2s infinite; }
+          .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         `}</style>
       </section>
 
-      {/* Modal */}
-      <AnimatePresence>
-        {isImageModalOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
-            onClick={closeImageModal}
-          >
+      {/* === MODAL QUE NUNCA PETARÁ === */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black flex flex-col">
+          {/* Imagen con swipe (sin AnimatePresence dentro del drag) */}
+          <div className="flex-1 relative overflow-hidden">
             <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
-              className="relative max-w-5xl w-full"
-              onClick={(e) => e.stopPropagation()}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.2}
+              onDragEnd={handleDragEnd}
+              className="w-full h-full cursor-grab active:cursor-grabbing"
+              style={{ touchAction: "pan-y" }}
             >
-              <img
-                src={dishes[selectedImageIndex].image || "/placeholder.svg"}
-                alt={dishes[selectedImageIndex].name}
-                className="w-full h-auto max-h-[85vh] object-contain rounded-2xl"
+              <motion.img
+                key={selectedIndex}
+                src={dishes[selectedIndex].image}
+                alt={dishes[selectedIndex].name}
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                className="w-full h-full object-contain pointer-events-none select-none"
+                draggable={false}
               />
-
-              {/* Controles */}
-              <button
-                onClick={() => navigateImage("prev")}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 backdrop-blur p-3 rounded-full"
-              >
-                <ChevronLeft className="w-8 h-8 text-white" />
-              </button>
-              <button
-                onClick={() => navigateImage("next")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 backdrop-blur p-3 rounded-full"
-              >
-                <ChevronRight className="w-8 h-8 text-white" />
-              </button>
-              <button
-                onClick={closeImageModal}
-                className="absolute top-4 right-4 bg-red-600 hover:bg-red-700 p-3 rounded-full"
-              >
-                <X className="w-8 h-8 text-white" />
-              </button>
-
-              {/* Info */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-8 rounded-b-2xl">
-                <div className="flex items-center gap-4 mb-4">
-                  <h3 className="text-3xl font-bold text-white">{dishes[selectedImageIndex].name}</h3>
-                  <span
-                    className={`px-4 py-2 rounded-full text-lg font-bold ${getBadgeColor(dishes[selectedImageIndex].badge)}`}
-                  >
-                    {dishes[selectedImageIndex].badge}
-                  </span>
-                </div>
-                <p className="text-white/90 text-lg max-w-4xl">{dishes[selectedImageIndex].description}</p>
-                <div className="mt-4 flex justify-between items-center">
-                  <span className="text-white/70">
-                    {selectedImageIndex + 1} / {dishes.length}
-                  </span>
-                  <div className="flex gap-2">
-                    {dishes.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setSelectedImageIndex(i)}
-                        className={`h-2 rounded-full transition-all ${
-                          i === selectedImageIndex ? "bg-white w-8" : "bg-white/50 w-2"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+            {/* Controles */}
+            <button onClick={closeModal} className="absolute top-4 right-4 bg-white/20 hover:bg-white/40 backdrop-blur p-4 rounded-full transition">
+              <X className="w-7 h-7 text-white" />
+            </button>
+            <button onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 backdrop-blur p-4 rounded-full transition">
+              <ChevronLeft className="w-8 h-8 text-white" />
+            </button>
+            <button onClick={next} className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 backdrop-blur p-4 rounded-full transition">
+              <ChevronRight className="w-8 h-8 text-white" />
+            </button>
+
+            {/* Indicadores */}
+            <div className="absolute bottom-28 left-1/2 -translate-x-1/2 flex gap-2">
+              {dishes.map((_, i) => (
+                <div
+                  key={i}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${i === selectedIndex ? "bg-white w-10" : "bg-white/40 w-1.5"}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Info fija abajo */}
+          <div className="bg-gradient-to-t from-black/95 via-black/70 to-transparent p-6 pt-24">
+            <div className="max-w-3xl mx-auto text-center">
+              <div className="flex items-center justify-center gap-4 mb-3">
+                <span className={`px-4 py-1.5 rounded-full text-sm font-bold ${getBadgeColor(dishes[selectedIndex].badge)}`}>
+                  {dishes[selectedIndex].badge}
+                </span>
+                <span className="text-white/70 text-sm font-medium">
+                  {selectedIndex + 1} / {dishes.length}
+                </span>
+              </div>
+              <h3 className="text-3xl font-bold text-white mb-2">{dishes[selectedIndex].name}</h3>
+              <p className="text-white/90 text-base leading-relaxed">{dishes[selectedIndex].description}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

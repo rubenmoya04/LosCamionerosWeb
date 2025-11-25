@@ -45,7 +45,7 @@ export default function Hero() {
   ]
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-blue-50 overflow-hidden">
+    <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-blue-50 overflow-hidden" id="hero">
       {/* Fondo animado con CSS (más ligero que Framer Motion) */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="blob blob-1"></div>

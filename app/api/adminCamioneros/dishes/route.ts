@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { kv } from "@vercel/kv"
 import { validateAuthToken, validateDishData, createErrorResponse, createProtectedResponse } from "@/lib/auth-utils"
 
+const isDev = process.env.NODE_ENV === "development"
 interface Dish {
   id: number
   name: string
@@ -36,13 +37,6 @@ const DEFAULT_DISHES: Dish[] = [
       "Espectacular mariscada con medio bogavante, sepia, calamarcitos, navajas, almejas gallegas, mejillones y gambas a la plancha, acompañada de nuestro pan de ajo casero",
     image: "/FotosBar/Mariscada.png",
     badge: "Especialidad",
-  },
-  {
-    id: 4,
-    name: "Croquetas de Jamón Caseras",
-    description: "Deliciosas croquetas de jamón ibérico",
-    image: "/FotosBar/CroquetasJamón.png",
-    badge: "Tapas",
   },
   {
     id: 5,
@@ -145,6 +139,12 @@ const DEFAULT_DISHES: Dish[] = [
 ]
 
 async function getDishes(): Promise<Dish[]> {
+
+  if (isDev) {
+    console.log("[DEV] Modo local → usando DEFAULT_DISHES")
+    return DEFAULT_DISHES
+  }
+
   try {
     const dishes = await kv.get<Dish[]>(KV_KEY)
     return dishes || DEFAULT_DISHES
@@ -155,6 +155,12 @@ async function getDishes(): Promise<Dish[]> {
 }
 
 async function saveDishes(dishes: Dish[]) {
+  // EN MODO DESARROLLO (LOCAL) NO GUARDAMOS EN UPSTASH → evitamos el error 500
+  if (process.env.NODE_ENV === "development") {
+    console.log("MODO LOCAL → cambios NO guardados en la base de datos (solo lectura)")
+    return
+  }
+
   try {
     await kv.set(KV_KEY, dishes)
   } catch (error) {

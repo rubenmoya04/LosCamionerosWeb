@@ -1,53 +1,44 @@
-import type { NextRequest } from "next/server"
+// app/api/adminCamioneros/dishes/[id]/route.ts
+import { type NextRequest, NextResponse } from "next/server"
 import { kv } from "@vercel/kv"
-import { validateAuthToken, createErrorResponse, createProtectedResponse } from "@/lib/auth-utils"
-
-interface Dish {
-  id: number
-  name: string
-  description: string
-  image: string
-  badge: string
-}
+import { validateAuthToken, createErrorResponse } from "@/lib/auth-utils"
 
 const KV_KEY = "dishes"
+const isDev = process.env.NODE_ENV === "development"
 
-async function getDishes(): Promise<Dish[]> {
-  try {
-    const dishes = await kv.get<Dish[]>(KV_KEY)
-    return dishes || []
-  } catch (error) {
-    console.error("[v0] Error fetching from KV:", error)
-    return []
-  }
-}
-
-async function saveDishes(dishes: Dish[]) {
-  await kv.set(KV_KEY, dishes)
-}
-
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }  // ← AWAITED!
+) {
+  // 1. Auth
   if (!validateAuthToken(request)) {
     return createErrorResponse("Unauthorized", 401)
   }
 
-  try {
-    const id = Number.parseInt(params.id)
-    if (isNaN(id)) {
-      return createErrorResponse("Invalid ID", 400)
-    }
+  // 2. Await params (Next.js 15 obliga)
+  const { id: idStr } = await params
+  const id = Number(idStr)
+  if (isNaN(id)) return createErrorResponse("Invalid ID", 400)
 
-    const dishes = await getDishes()
-    const filtered = dishes.filter((d: any) => d.id !== id)
+  // 3. EN LOCAL → NO GUARDAMOS NADA (evitamos error KV)
+  if (isDev) {
+    console.log("MODO LOCAL → eliminación ignorada (solo lectura)")
+    return NextResponse.json({ success: true, message: "Deleted (local mode)" })
+  }
+
+  try {
+    const data = await kv.get<any[]>(KV_KEY)
+    const dishes = data || []
+    const filtered = dishes.filter(d => d.id !== id)
 
     if (filtered.length === dishes.length) {
       return createErrorResponse("Dish not found", 404)
     }
 
-    await saveDishes(filtered)
-    return createProtectedResponse({ success: true })
+    await kv.set(KV_KEY, filtered)
+    return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("[v0] Error deleting dish:", error)
-    return createErrorResponse("Failed to delete dish", 500)
+    console.error("[KV] DELETE error:", error)
+    return createErrorResponse("Server error", 500)
   }
 }
