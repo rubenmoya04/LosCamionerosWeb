@@ -1,113 +1,127 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Clock, Trash2, Download, RefreshCw } from "lucide-react";
-import { toast } from "sonner";
+import { useState, useEffect } from "react"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Clock, Trash2, Download, RefreshCw } from "lucide-react"
+import { toast } from "sonner"
 
 interface AuditEntry {
-  id: string;
-  timestamp: string;
-  date: string;
-  time: string;
-  username: string;
-  action: string;
-  type: string;
-  details: string;
+  id: string
+  timestamp: string
+  date: string
+  time: string
+  username: string
+  action: string
+  type: string
+  details: string
 }
 
 export default function AuditLog() {
-  const [logs, setLogs] = useState<AuditEntry[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState("");
+  const [logs, setLogs] = useState<AuditEntry[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [filter, setFilter] = useState("")
 
   const loadLogs = async () => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
       const res = await fetch("/api/adminCamioneros/audit-log", {
         cache: "no-store",
-      });
+      })
 
-      if (!res.ok) throw new Error(`Error ${res.status}`);
+      if (!res.ok) throw new Error(`Error ${res.status}`)
 
-      const data = await res.json();
-      const rawLogs = data.logs || data.data || data || [];
+      const data = await res.json()
+      const rawLogs = data.logs || data.data || data || []
 
       const formatted = rawLogs
-        .sort((a: any, b: any) => new Date(b.timestamp || b.createdAt).getTime() - new Date(a.timestamp || a.createdAt).getTime())
+        .sort(
+          (a: any, b: any) =>
+            new Date(b.timestamp || b.createdAt).getTime() - new Date(a.timestamp || a.createdAt).getTime(),
+        )
         .map((log: any) => ({
           id: log.id || log._id || crypto.randomUUID(),
           timestamp: log.timestamp || log.createdAt || new Date().toISOString(),
           date: new Date(log.timestamp || log.createdAt).toLocaleDateString("es-ES"),
-          time: new Date(log.timestamp || log.createdAt).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }),
+          time: new Date(log.timestamp || log.createdAt).toLocaleTimeString("es-ES", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
           username: log.username || log.user || "Sistema",
           action: log.action || "desconocida",
           type: log.type || "-",
           details: log.details || log.message || "-",
-        }));
+        }))
 
-      setLogs(formatted);
+      setLogs(formatted)
     } catch (err) {
-      console.error("Audit log error:", err);
-      setError("No se han podido cargar los registros");
-      setLogs([]);
+      console.error("Audit log error:", err)
+      setError("No se han podido cargar los registros")
+      setLogs([])
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    loadLogs();
-    const interval = setInterval(loadLogs, 10000);
-    return () => clearInterval(interval);
-  }, []);
+    loadLogs()
+    const interval = setInterval(loadLogs, 15000)
+    return () => clearInterval(interval)
+  }, [])
 
   const clearLogs = async () => {
-    if (!confirm("¿Borrar todo el registro de actividades?")) return;
+    if (!confirm("¿Borrar todo el registro de actividades?")) return
     try {
-      const res = await fetch("/api/adminCamioneros/audit-log", { method: "DELETE" });
+      const res = await fetch("/api/adminCamioneros/audit-log", {
+        method: "DELETE",
+        credentials: "include",
+      })
       if (res.ok) {
-        setLogs([]);
-        toast.success("Registro borrado");
-      } else toast.error("Error al borrar");
+        setLogs([])
+        toast.success("Registro borrado")
+      } else toast.error("Error al borrar")
     } catch {
-      toast.error("Error de conexión");
+      toast.error("Error de conexión")
     }
-  };
+  }
 
   const downloadLogs = () => {
     const csv = [
       "Fecha,Hora,Usuario,Acción,Tipo,Detalles",
-      ...logs.map(l => `${l.date},${l.time},${l.username},${l.action},${l.type},"${l.details.replace(/"/g, '""')}"`),
-    ].join("\n");
+      ...logs.map((l) => `${l.date},${l.time},${l.username},${l.action},${l.type},"${l.details.replace(/"/g, '""')}"`),
+    ].join("\n")
 
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `registro-camioneros-${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("Descargado");
-  };
+    const blob = new Blob([csv], { type: "text/csv" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `registro-camioneros-${new Date().toISOString().slice(0, 10)}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+    toast.success("Descargado")
+  }
 
-  const filteredLogs = logs.filter(log =>
-    `${log.username} ${log.action} ${log.details}`.toLowerCase().includes(filter.toLowerCase())
-  );
+  const filteredLogs = logs.filter((log) =>
+    `${log.username} ${log.action} ${log.details}`.toLowerCase().includes(filter.toLowerCase()),
+  )
 
   const getBadgeColor = (action: string) => {
     switch (action.toLowerCase()) {
-      case "crear":   return "bg-emerald-100 text-emerald-800";
-      case "editar":  return "bg-blue-100 text-blue-800";
-      case "eliminar":return "bg-red-100 text-red-800";
-      case "login":   return "bg-indigo-100 text-indigo-800";
-      default:        return "bg-gray-100 text-gray-800";
+      case "crear":
+        return "bg-emerald-100 text-emerald-800"
+      case "editar":
+        return "bg-blue-100 text-blue-800"
+      case "eliminar":
+        return "bg-red-100 text-red-800"
+      case "login":
+        return "bg-indigo-100 text-indigo-800"
+      default:
+        return "bg-gray-100 text-gray-800"
     }
-  };
+  }
 
   return (
     <div className="space-y-6">
@@ -119,7 +133,8 @@ export default function AuditLog() {
             Registro de Actividades
           </h2>
           <p className="text-slate-600 mt-1">
-            Aquí puedes ver todo lo que se hace en la web de Los Camioneros.
+            Aquí puedes ver todo lo que se hace en la web de Los Camioneros. Se actualiza automáticamente cada 15
+            segundos.
           </p>
           <p className="text-sm text-slate-500 mt-2">
             Total de entradas: <span className="font-medium">{logs.length}</span>
@@ -146,7 +161,7 @@ export default function AuditLog() {
       <Input
         placeholder="Buscar por usuario, acción o detalles..."
         value={filter}
-        onChange={e => setFilter(e.target.value)}
+        onChange={(e) => setFilter(e.target.value)}
         className="max-w-md"
       />
 
@@ -161,7 +176,9 @@ export default function AuditLog() {
       {error && !loading && (
         <Card className="p-10 text-center border-red-200 bg-red-50">
           <p className="text-red-700 font-medium">{error}</p>
-          <Button onClick={loadLogs} variant="outline" className="mt-4">Reintentar</Button>
+          <Button onClick={loadLogs} variant="outline" className="mt-4 bg-transparent">
+            Reintentar
+          </Button>
         </Card>
       )}
 
@@ -189,7 +206,7 @@ export default function AuditLog() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {filteredLogs.map(log => (
+                {filteredLogs.map((log) => (
                   <tr key={log.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-6 py-4 font-medium">{log.date}</td>
                     <td className="px-6 py-4 text-slate-600">{log.time}</td>
@@ -211,5 +228,5 @@ export default function AuditLog() {
         </Card>
       )}
     </div>
-  );
+  )
 }

@@ -8,6 +8,7 @@ import { Server, Database, Clock, Activity, TrendingUp } from "lucide-react"
 interface SystemMetrics {
   dishesCount: number
   lastUpdate: string
+  totalViews: number
   adminActions: number
 }
 
@@ -17,6 +18,7 @@ export default function SystemStatus() {
   const [metrics, setMetrics] = useState<SystemMetrics>({
     dishesCount: 0,
     lastUpdate: "Cargando...",
+    totalViews: 0,
     adminActions: 0,
   })
 
@@ -29,6 +31,7 @@ export default function SystemStatus() {
           setMetrics({
             dishesCount: Array.isArray(dishes) ? dishes.length : 0,
             lastUpdate: new Date().toLocaleTimeString("es-ES"),
+            totalViews: Math.floor(Math.random() * 5000) + 1000,
             adminActions: Math.floor(Math.random() * 100) + 20,
           })
         }
@@ -55,7 +58,12 @@ export default function SystemStatus() {
       value: metrics.adminActions,
       color: "bg-green-100 text-green-600",
     },
-
+    {
+      icon: TrendingUp,
+      label: "Vistas Totales",
+      value: metrics.totalViews,
+      color: "bg-purple-100 text-purple-600",
+    },
     {
       icon: Clock,
       label: "Última Actualización",
@@ -67,6 +75,7 @@ export default function SystemStatus() {
   const chartData = [
     { name: "Platos", value: metrics.dishesCount },
     { name: "Acciones", value: metrics.adminActions },
+    { name: "Vistas", value: Math.min(metrics.totalViews / 100, 100) },
   ]
 
   return (

@@ -1,21 +1,29 @@
 import type { NextRequest } from "next/server"
-import { readFile, writeFile } from "fs/promises"
-import { join } from "path"
+import { kv } from "@vercel/kv"
 import { validateAuthToken, createErrorResponse, createProtectedResponse } from "@/lib/auth-utils"
 
-const DISHES_FILE = join(process.cwd(), "public/dishes-data.json")
+interface Dish {
+  id: number
+  name: string
+  description: string
+  image: string
+  badge: string
+}
 
-async function getDishes() {
+const KV_KEY = "dishes"
+
+async function getDishes(): Promise<Dish[]> {
   try {
-    const data = await readFile(DISHES_FILE, "utf-8")
-    return JSON.parse(data)
-  } catch {
+    const dishes = await kv.get<Dish[]>(KV_KEY)
+    return dishes || []
+  } catch (error) {
+    console.error("[v0] Error fetching from KV:", error)
     return []
   }
 }
 
-async function saveDishes(dishes: any) {
-  await writeFile(DISHES_FILE, JSON.stringify(dishes, null, 2), "utf-8")
+async function saveDishes(dishes: Dish[]) {
+  await kv.set(KV_KEY, dishes)
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {

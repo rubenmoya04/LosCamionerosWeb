@@ -1,55 +1,57 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useRouter } from 'next/navigation';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import { toast } from "sonner";
-import { UtensilsCrossed, User, Lock, Loader2, Eye, EyeOff } from 'lucide-react';
+import type React from "react"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card } from "@/components/ui/card"
+import { toast } from "sonner"
+import { UtensilsCrossed, User, Lock, Loader2, Eye, EyeOff } from "lucide-react"
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(false);
+  const router = useRouter()
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState("")
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(false);
+    e.preventDefault()
+    setLoading(true)
+    setError("")
 
     try {
       const response = await fetch("/api/adminCamioneros/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // ← recomendado (aunque no es estrictamente necesario aquí)
+        credentials: "include",
         body: JSON.stringify({ username, password }),
-      });
+      })
 
-      const data = await response.json();
+      const data = await response.json()
 
       if (response.ok && data.success) {
-        localStorage.setItem("adminUsername", username);
-        toast.success("¡Bienvenido al Panel!");
+        localStorage.setItem("adminUsername", username)
+        toast.success("¡Bienvenido al Panel!")
 
         // Full reload para que el middleware vea la cookie
-        window.location.href = "/adminCamioneros";
+        window.location.href = "/adminCamioneros"
       } else {
-        setError(true);
-        toast.error("Usuario o contraseña incorrectos");
-        setPassword("");
+        setError("Usuario o contraseña incorrectos")
+        toast.error("Usuario o contraseña incorrectos")
+        setPassword("")
       }
     } catch (err) {
-      console.error("Error en login:", err);
-      setError(true);
-      toast.error("Ocurrió un error inesperado.");
+      console.error("Error en login:", err)
+      setError("Ocurrió un error inesperado. Por favor, intenta de nuevo.")
+      toast.error("Ocurrió un error inesperado.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <>
@@ -60,8 +62,11 @@ export default function LoginPage() {
           <div className="blob blob-3"></div>
         </div>
 
-        <Card className={`w-full max-w-md shadow-2xl border-slate-700 bg-slate-800/90 backdrop-blur-sm transform transition-all duration-500 ${error ? "animate-shake" : "animate-fade-in"
-          }`}>
+        <Card
+          className={`w-full max-w-md shadow-2xl border-slate-700 bg-slate-800/90 backdrop-blur-sm transform transition-all duration-500 ${
+            error ? "animate-shake" : "animate-fade-in"
+          }`}
+        >
           <div className="p-8">
             <div className="text-center mb-8">
               <div className="flex justify-center mb-6">
@@ -69,9 +74,7 @@ export default function LoginPage() {
                   <UtensilsCrossed className="w-8 h-8 text-white" />
                 </div>
               </div>
-              <h1 className="text-3xl font-extrabold text-white mb-2">
-                Los Camioneros
-              </h1>
+              <h1 className="text-3xl font-extrabold text-white mb-2">Los Camioneros</h1>
               <p className="text-slate-400 text-sm">Panel de Administración</p>
             </div>
 
@@ -122,6 +125,12 @@ export default function LoginPage() {
                 </div>
               </div>
 
+              {error && (
+                <div className="bg-red-500/10 border border-red-500/30 rounded-md p-3">
+                  <p className="text-red-500 text-sm font-medium">{error}</p>
+                </div>
+              )}
+
               <Button
                 type="submit"
                 disabled={loading}
@@ -147,9 +156,7 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            <p className="text-xs text-slate-500 text-center mt-8">
-              Acceso restringido a personal autorizado.
-            </p>
+            <p className="text-xs text-slate-500 text-center mt-8">Acceso restringido a personal autorizado.</p>
           </div>
         </Card>
       </div>
@@ -207,5 +214,5 @@ export default function LoginPage() {
         }
       `}</style>
     </>
-  );
+  )
 }

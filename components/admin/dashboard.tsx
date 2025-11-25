@@ -42,7 +42,7 @@ const SidebarButton = ({
     size="lg"
     className={`w-full justify-start h-12 rounded-xl font-medium transition-all duration-300 group ${
       isActive
-        ? "bg-gradient-to-r from-blue-500 to-blue-700 text-white shadow-lg hover:text-white hover:bg-gradient-to-r hover:from-blue-600 hover:to-blue-800"
+        ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg"
         : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
     }`}
     onClick={onClick}

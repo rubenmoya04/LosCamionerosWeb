@@ -3,12 +3,13 @@
 import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Trash2, Upload, Edit2, Check, X, Plus } from "lucide-react"
+import { Trash2, Upload, Edit2, Check, X, Plus, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import Image from "next/image"
 
@@ -51,6 +52,7 @@ function DishModal({
   startIdEdit,
   validateAndUpdateId,
   setIdEditMode,
+  isSaving,
 }: {
   isOpen: boolean
   onClose: () => void
@@ -70,6 +72,7 @@ function DishModal({
   startIdEdit: (currentId: number) => void
   validateAndUpdateId: () => void
   setIdEditMode: React.Dispatch<React.SetStateAction<number | null>>
+  isSaving: boolean
 }) {
   const modalRef = useRef<HTMLDivElement>(null)
 
@@ -97,7 +100,7 @@ function DishModal({
       <div ref={modalRef} className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b p-4 flex justify-between items-center">
           <h3 className="text-xl font-bold">{isNewDish ? "Añadir Nuevo Plato" : "Editar Plato"}</h3>
-          <Button variant="ghost" size="sm" onClick={onClose}>
+          <Button variant="ghost" size="sm" onClick={onClose} disabled={isSaving}>
             <X className="h-5 w-5" />
           </Button>
         </div>
@@ -216,12 +219,22 @@ function DishModal({
           <div className="flex gap-2 pt-4">
             <Button
               onClick={saveDish}
+              disabled={isSaving}
               className={`flex-1 ${isNewDish ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"}`}
             >
-              <Check className="w-4 h-4 mr-2" />
-              {isNewDish ? "Crear Plato" : "Guardar Cambios"}
+              {isSaving ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Guardando...
+                </>
+              ) : (
+                <>
+                  <Check className="w-4 h-4 mr-2" />
+                  {isNewDish ? "Crear Plato" : "Guardar Cambios"}
+                </>
+              )}
             </Button>
-            <Button onClick={onClose} variant="outline" className="flex-1 bg-transparent">
+            <Button onClick={onClose} variant="outline" className="flex-1 bg-transparent" disabled={isSaving}>
               <X className="w-4 h-4 mr-2" />
               Cancelar
             </Button>
@@ -233,6 +246,7 @@ function DishModal({
 }
 
 export default function MenuDishesManager() {
+  const router = useRouter()
   const [dishes, setDishes] = useState<Dish[]>([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<number | null>(null)
@@ -242,6 +256,8 @@ export default function MenuDishesManager() {
   const [uploadingId, setUploadingId] = useState<number | null>(null)
   const [formData, setFormData] = useState<Partial<Dish>>({})
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [deletingId, setDeletingId] = useState<number | null>(null)
 
   useEffect(() => {
     loadDishes()
@@ -321,7 +337,6 @@ export default function MenuDishesManager() {
     toast.success("ID actualizado")
   }
 
-  // Y REEMPLAZA TAMBIÉN saveDish (para que crear/editar también funcione siempre)
   const saveDish = async () => {
     if (!formData.name || !formData.description || !formData.image || !formData.badge) {
       toast.error("Completa todos los campos requeridos")
@@ -329,6 +344,7 @@ export default function MenuDishesManager() {
     }
 
     try {
+      setIsSaving(true)
       const isNewDish = editingId === -1
       const action = isNewDish ? "add" : "update"
       const dishData = {
@@ -339,7 +355,7 @@ export default function MenuDishesManager() {
       const response = await fetch("/api/adminCamioneros/dishes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // AQUÍ TAMBIÉN
+        credentials: "include",
         body: JSON.stringify({ dish: dishData, action }),
       })
 
@@ -358,9 +374,12 @@ export default function MenuDishesManager() {
           }),
         })
 
-        toast.success(`Plato ${isNewDish ? "creado" : "actualizado"} exitosamente`)
+        const message = isNewDish ? "Plato guardado correctamente" : "Plato editado correctamente"
+        toast.success(message)
+
         await loadDishes()
         closeModal()
+        router.refresh()
       } else {
         const error = await response.json()
         toast.error(error.message || "Error guardando plato")
@@ -368,6 +387,8 @@ export default function MenuDishesManager() {
     } catch (error) {
       console.error("[v0] Error saving dish:", error)
       toast.error("Error al guardar")
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -375,19 +396,23 @@ export default function MenuDishesManager() {
     if (!confirm("¿Estás seguro de que quieres eliminar este plato?")) return
 
     try {
+      setDeletingId(id)
       const res = await fetch(`/api/adminCamioneros/dishes/${id}`, {
         method: "DELETE",
-        credentials: "include", // ← ESTO ES LO QUE FALTABA EN PRODUCCIÓN
+        credentials: "include",
       })
 
       if (res.ok) {
-        toast.success("Plato eliminado")
+        toast.success("Plato eliminado correctamente")
         await loadDishes()
+        router.refresh()
       } else {
         toast.error("Error al eliminar")
       }
     } catch (err) {
       toast.error("Error de conexión")
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -502,13 +527,29 @@ export default function MenuDishesManager() {
                     variant="default"
                     size="sm"
                     className="flex-1 bg-blue-600 hover:bg-blue-700"
+                    disabled={deletingId === dish.id}
                   >
                     <Edit2 className="w-4 h-4 mr-2" />
                     Editar
                   </Button>
-                  <Button onClick={() => deleteDish(dish.id)} variant="destructive" size="sm" className="flex-1">
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Eliminar
+                  <Button
+                    onClick={() => deleteDish(dish.id)}
+                    variant="destructive"
+                    size="sm"
+                    className="flex-1"
+                    disabled={deletingId === dish.id}
+                  >
+                    {deletingId === dish.id ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Eliminando...
+                      </>
+                    ) : (
+                      <>
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Eliminar
+                      </>
+                    )}
                   </Button>
                 </div>
               </div>
@@ -537,6 +578,7 @@ export default function MenuDishesManager() {
         startIdEdit={startIdEdit}
         validateAndUpdateId={validateAndUpdateId}
         setIdEditMode={setIdEditMode}
+        isSaving={isSaving}
       />
     </div>
   )

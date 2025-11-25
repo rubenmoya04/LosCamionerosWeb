@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { readFile, writeFile } from "fs/promises"
-import { join } from "path"
+import { kv } from "@vercel/kv"
 import { validateAuthToken, validateDishData, createErrorResponse, createProtectedResponse } from "@/lib/auth-utils"
 
 interface Dish {
@@ -11,7 +10,7 @@ interface Dish {
   badge: string
 }
 
-const DISHES_FILE = join(process.cwd(), "public/dishes-data.json")
+const KV_KEY = "dishes"
 
 const DEFAULT_DISHES: Dish[] = [
   {
@@ -147,21 +146,26 @@ const DEFAULT_DISHES: Dish[] = [
 
 async function getDishes(): Promise<Dish[]> {
   try {
-    const data = await readFile(DISHES_FILE, "utf-8")
-    return JSON.parse(data)
+    const dishes = await kv.get<Dish[]>(KV_KEY)
+    return dishes || DEFAULT_DISHES
   } catch (error) {
+    console.error("[v0] Error fetching from KV:", error)
     return DEFAULT_DISHES
   }
 }
 
 async function saveDishes(dishes: Dish[]) {
-  await writeFile(DISHES_FILE, JSON.stringify(dishes, null, 2), "utf-8")
+  try {
+    await kv.set(KV_KEY, dishes)
+  } catch (error) {
+    console.error("[v0] Error saving to KV:", error)
+    throw new Error("Failed to save dishes to database")
+  }
 }
 
 export async function GET(request: NextRequest) {
   try {
     const dishes = await getDishes()
-    // Return array directly instead of wrapped in object, frontend expects this format
     return NextResponse.json(dishes)
   } catch (error) {
     console.error("[v0] Error fetching dishes:", error)
