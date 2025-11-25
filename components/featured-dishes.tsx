@@ -1,34 +1,46 @@
 "use client"
 
+import type React from "react"
+
 import { useEffect, useRef, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { UtensilsCrossed, ChefHat, Flame, PhoneCall, Expand, X, ChevronLeft, ChevronRight, Utensils } from "lucide-react"
+import {
+  UtensilsCrossed,
+  ChefHat,
+  Flame,
+  PhoneCall,
+  Expand,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Utensils,
+} from "lucide-react"
 
 // Interfaz para los platos (debe coincidir con la del dashboard)
 interface Dish {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  badge: string;
+  id: number
+  name: string
+  description: string
+  image: string
+  badge: string
 }
 
 // Colores para las etiquetas (debe coincidir con el del dashboard)
 const getBadgeColor = (badge: string) => {
   const colors: Record<string, string> = {
     "Más vendido": "bg-gradient-to-r from-red-500 to-orange-500 text-white",
-    "Especialidad": "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
-    "Tradicional": "bg-gradient-to-r from-amber-500 to-yellow-500 text-white",
-    "Premium": "bg-gradient-to-r from-gray-800 to-gray-900 text-white",
-    "Postre": "bg-gradient-to-r from-pink-400 to-rose-400 text-white",
-    "Tapas": "bg-gradient-to-r from-lime-600 via-emerald-600 to-green-700 text-white shadow-md shadow-lime-800/30",
+    Especialidad: "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
+    Tradicional: "bg-gradient-to-r from-amber-500 to-yellow-500 text-white",
+    Premium: "bg-gradient-to-r from-gray-800 to-gray-900 text-white",
+    Postre: "bg-gradient-to-r from-pink-400 to-rose-400 text-white",
+    Tapas: "bg-gradient-to-r from-lime-600 via-emerald-600 to-green-700 text-white shadow-md shadow-lime-800/30",
   }
   return colors[badge] || "bg-gradient-to-r from-blue-500 to-cyan-500 text-white"
 }
 
 export default function FeaturedDishes() {
-  const [dishes, setDishes] = useState<Dish[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [dishes, setDishes] = useState<Dish[]>([])
+  const [loading, setLoading] = useState(true)
   const [visibleCards, setVisibleCards] = useState<number[]>([])
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
@@ -42,29 +54,37 @@ export default function FeaturedDishes() {
   useEffect(() => {
     const loadDishes = async () => {
       try {
-        setLoading(true);
-        const response = await fetch("/api/adminCamioneros/dishes");
+        setLoading(true)
+        const response = await fetch("/api/adminCamioneros/dishes")
         if (response.ok) {
-          const data = await response.json();
-          setDishes(data.dishes || data);
+          const data = await response.json()
+          const dishesArray = Array.isArray(data) ? data : data.dishes || data
+          if (Array.isArray(dishesArray) && dishesArray.length > 0) {
+            setDishes(dishesArray)
+          } else {
+            console.error("Invalid dishes data format")
+            setDishes([])
+          }
         } else {
-          console.error("Error cargando platos");
+          console.error("Error cargando platos")
+          setDishes([])
         }
       } catch (error) {
-        console.error("Error loading dishes:", error);
+        console.error("Error loading dishes:", error)
+        setDishes([])
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    loadDishes();
-  }, []);
+    loadDishes()
+  }, [])
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768)
     checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
   }, [])
 
   useEffect(() => {
@@ -82,7 +102,7 @@ export default function FeaturedDishes() {
           }
         })
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     )
 
     if (sectionRef.current) observer.observe(sectionRef.current)
@@ -105,36 +125,34 @@ export default function FeaturedDishes() {
     const isLeftSwipe = distance > 50
     const isRightSwipe = distance < -50
 
-    if (isLeftSwipe && isImageModalOpen) navigateImage('next')
-    if (isRightSwipe && isImageModalOpen) navigateImage('prev')
+    if (isLeftSwipe && isImageModalOpen) navigateImage("next")
+    if (isRightSwipe && isImageModalOpen) navigateImage("prev")
   }
 
   // Modal handlers
   const openImageModal = (index: number) => {
     setSelectedImageIndex(index)
     setIsImageModalOpen(true)
-    document.body.style.overflow = 'hidden'
+    document.body.style.overflow = "hidden"
   }
 
   const closeImageModal = () => {
     setIsImageModalOpen(false)
-    document.body.style.overflow = 'unset'
+    document.body.style.overflow = "unset"
   }
 
-  const navigateImage = (direction: 'prev' | 'next') => {
+  const navigateImage = (direction: "prev" | "next") => {
     setSelectedImageIndex((prev) =>
-      direction === 'prev'
-        ? (prev - 1 + dishes.length) % dishes.length
-        : (prev + 1) % dishes.length
+      direction === "prev" ? (prev - 1 + dishes.length) % dishes.length : (prev + 1) % dishes.length,
     )
   }
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isImageModalOpen) closeImageModal()
+      if (e.key === "Escape" && isImageModalOpen) closeImageModal()
     }
-    document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
+    document.addEventListener("keydown", handleEscape)
+    return () => document.removeEventListener("keydown", handleEscape)
   }, [isImageModalOpen])
 
   const containerVariants = {
@@ -212,7 +230,10 @@ export default function FeaturedDishes() {
               </div>
             </motion.div>
 
-            <motion.h2 variants={itemVariants} className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 via-cyan-600 to-emerald-600 bg-clip-text text-transparent mb-4">
+            <motion.h2
+              variants={itemVariants}
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 via-cyan-600 to-emerald-600 bg-clip-text text-transparent mb-4"
+            >
               Platos Destacados
             </motion.h2>
 
@@ -254,7 +275,9 @@ export default function FeaturedDishes() {
                   <div className="relative bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100">
                     {/* Badge */}
                     <div className="absolute top-4 left-4 z-20">
-                      <span className={`px-3 py-1.5 rounded-full text-sm font-bold ${getBadgeColor(dish.badge)} shadow-lg`}>
+                      <span
+                        className={`px-3 py-1.5 rounded-full text-sm font-bold ${getBadgeColor(dish.badge)} shadow-lg`}
+                      >
                         {dish.badge}
                       </span>
                     </div>
@@ -275,32 +298,36 @@ export default function FeaturedDishes() {
                       onClick={() => openImageModal(index)}
                     >
                       {/* Skeleton con shimmer */}
-                      <div className={`absolute inset-0 bg-gray-200 ${visibleCards.includes(dish.id) ? 'opacity-0' : 'opacity-100'} transition-opacity duration-700`}>
+                      <div
+                        className={`absolute inset-0 bg-gray-200 ${visibleCards.includes(dish.id) ? "opacity-0" : "opacity-100"} transition-opacity duration-700`}
+                      >
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
                       </div>
 
                       {/* Imagen real */}
                       <img
-                        src={dish.image}
+                        src={dish.image || "/placeholder.svg"}
                         alt={dish.name}
                         loading="eager"
-                        onLoad={() => setVisibleCards(prev => [...new Set([...prev, dish.id])])}
+                        onLoad={() => setVisibleCards((prev) => [...new Set([...prev, dish.id])])}
                         onError={(e) => {
-                          setVisibleCards(prev => [...new Set([...prev, dish.id])])
+                          setVisibleCards((prev) => [...new Set([...prev, dish.id])])
                           e.currentTarget.src = "https://via.placeholder.com/800x600/2d3748/ffffff?text=DELICIOSO"
                         }}
                         className={`w-full h-full object-cover transition-all duration-700 ${
                           visibleCards.includes(dish.id)
                             ? hoveredCard === dish.id && !isMobile
-                              ? 'scale-110'
-                              : 'scale-100'
-                            : 'scale-95 opacity-0'
+                              ? "scale-110"
+                              : "scale-100"
+                            : "scale-95 opacity-0"
                         }`}
                       />
 
                       {/* Overlay hover */}
                       {!isMobile && (
-                        <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent transition-opacity duration-500 ${hoveredCard === dish.id ? 'opacity-100' : 'opacity-0'}`}>
+                        <div
+                          className={`absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent transition-opacity duration-500 ${hoveredCard === dish.id ? "opacity-100" : "opacity-0"}`}
+                        >
                           <div className="absolute bottom-4 left-4 right-4 flex items-center gap-2 text-white">
                             <ChefHat className="w-6 h-6" />
                             <span className="text-lg font-semibold">Hecho con amor</span>
@@ -314,9 +341,7 @@ export default function FeaturedDishes() {
                       <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-cyan-600 transition-colors">
                         {dish.name}
                       </h3>
-                      <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">
-                        {dish.description}
-                      </p>
+                      <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">{dish.description}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -394,20 +419,20 @@ export default function FeaturedDishes() {
               onClick={(e) => e.stopPropagation()}
             >
               <img
-                src={dishes[selectedImageIndex].image}
+                src={dishes[selectedImageIndex].image || "/placeholder.svg"}
                 alt={dishes[selectedImageIndex].name}
                 className="w-full h-auto max-h-[85vh] object-contain rounded-2xl"
               />
 
               {/* Controles */}
               <button
-                onClick={() => navigateImage('prev')}
+                onClick={() => navigateImage("prev")}
                 className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 backdrop-blur p-3 rounded-full"
               >
                 <ChevronLeft className="w-8 h-8 text-white" />
               </button>
               <button
-                onClick={() => navigateImage('next')}
+                onClick={() => navigateImage("next")}
                 className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 backdrop-blur p-3 rounded-full"
               >
                 <ChevronRight className="w-8 h-8 text-white" />
@@ -422,16 +447,14 @@ export default function FeaturedDishes() {
               {/* Info */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-8 rounded-b-2xl">
                 <div className="flex items-center gap-4 mb-4">
-                  <h3 className="text-3xl font-bold text-white">
-                    {dishes[selectedImageIndex].name}
-                  </h3>
-                  <span className={`px-4 py-2 rounded-full text-lg font-bold ${getBadgeColor(dishes[selectedImageIndex].badge)}`}>
+                  <h3 className="text-3xl font-bold text-white">{dishes[selectedImageIndex].name}</h3>
+                  <span
+                    className={`px-4 py-2 rounded-full text-lg font-bold ${getBadgeColor(dishes[selectedImageIndex].badge)}`}
+                  >
                     {dishes[selectedImageIndex].badge}
                   </span>
                 </div>
-                <p className="text-white/90 text-lg max-w-4xl">
-                  {dishes[selectedImageIndex].description}
-                </p>
+                <p className="text-white/90 text-lg max-w-4xl">{dishes[selectedImageIndex].description}</p>
                 <div className="mt-4 flex justify-between items-center">
                   <span className="text-white/70">
                     {selectedImageIndex + 1} / {dishes.length}
@@ -442,7 +465,7 @@ export default function FeaturedDishes() {
                         key={i}
                         onClick={() => setSelectedImageIndex(i)}
                         className={`h-2 rounded-full transition-all ${
-                          i === selectedImageIndex ? 'bg-white w-8' : 'bg-white/50 w-2'
+                          i === selectedImageIndex ? "bg-white w-8" : "bg-white/50 w-2"
                         }`}
                       />
                     ))}

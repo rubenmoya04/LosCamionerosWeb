@@ -21,13 +21,6 @@
     "badge": "Especialidad"
   },
   {
-    "id": 4,
-    "name": "Croquetas de Jamón Caseras",
-    "description": "Deliciosas croquetas de jamón ibérico",
-    "image": "/FotosBar/CroquetasJamón.png",
-    "badge": "Tapas"
-  },
-  {
     "id": 5,
     "name": "Tarta de queso",
     "description": "Deliciosa tarta de queso cremoso con base de galleta artesanal y coulis de fresas frescas, el postre perfecto para cerrar cualquier comida",

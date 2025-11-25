@@ -1,65 +1,46 @@
-# ═════════════════════════════════════
-# NEXT.JS 14+ + VERCEL (2025) – .gitignore definitivo
-# ═════════════════════════════════════
+# ═════════════════════════════════════════════════════
+# .gitignore – LosCamionerosWeb (Next.js + Vercel 2025)
+# ═════════════════════════════════════════════════════
 
 # Dependencias
 node_modules/
-pnpm-lock.yaml        # si usas pnpm (tú sí lo usas)
-package-lock.json     # por si alguna vez usaste npm
-yarn.lock             # por si alguna vez usaste yarn
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
 
 # Builds y cachés de Next.js
 .next/
 out/
 dist/
 build/
+.vercel_build_output/
 
 # Vercel
 .vercel
 
-# Variables de entorno (¡NUNCA subir credenciales!)
+# Variables de entorno → NUNCA subir credenciales
 .env
 .env.local
 .env.development.local
 .env.production.local
-.env.test.local
 .env*.local
 
-# Solo si quieres un ejemplo público (opcional, recomendado)
+# Pero sí permitimos el ejemplo público
 !.env.example
 
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
 
-# Logs y datos de ejecución
-*.log
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+*.log
 logs/
-pids/
-*.pid
-*.seed
-*.pid.lock
 
-# Carpetas temporales
-.tmp/
-.temp/
-temp/
-tmp/
-
-# IDEs y editores
-.vscode/
-.idea/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Sistema operativo
+# Archivos temporales y del sistema
 .DS_Store
 .DS_Store?
 ._*
@@ -67,25 +48,55 @@ tmp/
 .Trashes
 ehthumbs.db
 Thumbs.db
+Thumbs.db:encryptable
+ehthumbs_vista.db
 
-# Uploads de usuarios → NUNCA subir fotos/imágenes subidas por usuarios
+# IDEs y editores
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json      # opcional: si quieres compartir config
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Carpetas temporales
+.tmp/
+.temp/
+temp/
+tmp/
+
+# Cache de herramientas
+.eslintcache
+.prettiercache
+.stylelintcache
+
+# Base de datos JSON → ¡¡NO SUBIR DATOS REALES!!
+# Solo subimos la estructura vacía o de ejemplo
+public/dishes-data.json
+public/audit-log.json
+
+# Pero permitimos archivos de ejemplo o plantilla
+!public/dishes-data.example.json
+!public/audit-log.example.json
+
+# Imágenes subidas por el admin (nunca subirlas al repo)
 public/uploads/
 public/uploads/**
-# Pero mantenemos la carpeta vacía en el repo para que Vercel la cree
+# Mantenemos la carpeta vacía para que Vercel la cree
 !public/uploads/.gitkeep
 
-# Otras cosas que a veces aparecen en proyectos Next
+# Imágenes del bar/restaurante → estas SÍ van al repo (son estáticas)
+# (están en public/FotosBar/ → no las ignoramos)
+
+# Otros
 .env.backup
 .env.save
 .env.old
-
-# Cache de ESLint, Prettier, etc.
-.eslintcache
-.prettiercache
-
-# Vercel Analytics (si lo usas)
-.vercel_build_output/
-
-# Opcional: si usas Storybook, tests, etc.
-.storybook/
 coverage/
+.storybook/
+*.pid
+*.seed
+*.pid.lock

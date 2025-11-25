@@ -1,36 +1,40 @@
-import { NextRequest, NextResponse } from "next/server";
-import { readFile, writeFile } from "fs/promises";
-import { join } from "path";
+import { type NextRequest, NextResponse } from "next/server"
+import { readFile, writeFile } from "fs/promises"
+import { join } from "path"
+import { validateAuthToken, validateDishData, createErrorResponse, createProtectedResponse } from "@/lib/auth-utils"
 
 interface Dish {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  badge: string;
+  id: number
+  name: string
+  description: string
+  image: string
+  badge: string
 }
 
-const DISHES_FILE = join(process.cwd(), "public/dishes-data.json");
+const DISHES_FILE = join(process.cwd(), "public/dishes-data.json")
 
 const DEFAULT_DISHES: Dish[] = [
   {
     id: 1,
     name: "Pincho camionero",
-    description: "Exquisito pincho elaborado con los mejores ingredientes de nuestra tierra, una combinación perfecta de sabores que representa el alma de nuestra cocina tradicional",
+    description:
+      "Exquisito pincho elaborado con los mejores ingredientes de nuestra tierra, una combinación perfecta de sabores que representa el alma de nuestra cocina tradicional",
     image: "/FotosBar/PinchoCamionero.png",
     badge: "Más vendido",
   },
   {
     id: 2,
     name: "Pulpo a la gallega",
-    description: "Auténtico pulpo gallego cocido a la perfección, servido sobre cama de patatas gallegas y regado con nuestro aceite de oliva virgen extra",
+    description:
+      "Auténtico pulpo gallego cocido a la perfección, servido sobre cama de patatas gallegas y regado con nuestro aceite de oliva virgen extra",
     image: "/FotosBar/PulpoGallega.png",
     badge: "Tradicional",
   },
   {
     id: 3,
     name: "Especial Camioneros",
-    description: "Espectacular mariscada con medio bogavante, sepia, calamarcitos, navajas, almejas gallegas, mejillones y gambas a la plancha, acompañada de nuestro pan de ajo casero",
+    description:
+      "Espectacular mariscada con medio bogavante, sepia, calamarcitos, navajas, almejas gallegas, mejillones y gambas a la plancha, acompañada de nuestro pan de ajo casero",
     image: "/FotosBar/Mariscada.png",
     badge: "Especialidad",
   },
@@ -44,28 +48,32 @@ const DEFAULT_DISHES: Dish[] = [
   {
     id: 5,
     name: "Tarta de queso",
-    description: "Deliciosa tarta de queso cremoso con base de galleta artesanal y coulis de fresas frescas, el postre perfecto para cerrar cualquier comida",
+    description:
+      "Deliciosa tarta de queso cremoso con base de galleta artesanal y coulis de fresas frescas, el postre perfecto para cerrar cualquier comida",
     image: "/FotosBar/TartaQueso.png",
     badge: "Postre",
   },
   {
     id: 6,
     name: "Chuletón a la brasa",
-    description: "Premium corte de carne seleccionado cuidadosamente, cocinado a la brasa tradicional con leña natural, servido con patatas fritas caseras y pimientos del padrón",
+    description:
+      "Premium corte de carne seleccionado cuidadosamente, cocinado a la brasa tradicional con leña natural, servido con patatas fritas caseras y pimientos del padrón",
     image: "/FotosBar/Carne.png",
     badge: "Premium",
   },
   {
     id: 7,
     name: "Manitas de cerdo",
-    description: "Manitas de cerdo tiernas, cocinadas a la perfección con un acabado dorado y sabroso, acompañadas de patatas y perejil fresco.",
+    description:
+      "Manitas de cerdo tiernas, cocinadas a la perfección con un acabado dorado y sabroso, acompañadas de patatas y perejil fresco.",
     image: "/FotosBar/ManitasCerdo.png",
     badge: "Tradicional",
   },
   {
     id: 8,
     name: "Pata de pulpo",
-    description: "Pata de pulpo asada a la brasa, servida sobre cama de patatas con pimentón y aceite de oliva virgen extra, un clásico gallego con un toque moderno",
+    description:
+      "Pata de pulpo asada a la brasa, servida sobre cama de patatas con pimentón y aceite de oliva virgen extra, un clásico gallego con un toque moderno",
     image: "/FotosBar/PulpoPata.png",
     badge: "Tapas",
   },
@@ -79,7 +87,8 @@ const DEFAULT_DISHES: Dish[] = [
   {
     id: 10,
     name: "Plato combinado de sepia",
-    description: "Sepia fresca, cocinada a la plancha con su punto perfecto, servida con guarnición de patatas fritas caseras y ensalada fresca",
+    description:
+      "Sepia fresca, cocinada a la plancha con su punto perfecto, servida con guarnición de patatas fritas caseras y ensalada fresca",
     image: "/FotosBar/SepiaPlato.png",
     badge: "Especialidad",
   },
@@ -93,7 +102,8 @@ const DEFAULT_DISHES: Dish[] = [
   {
     id: 12,
     name: "Secreto Ibérico a la brasa",
-    description: "Jugoso corte de cerdo ibérico de bellota, cocinado lentamente a la brasa con leña, acompañado de patatas fritas caseras",
+    description:
+      "Jugoso corte de cerdo ibérico de bellota, cocinado lentamente a la brasa con leña, acompañado de patatas fritas caseras",
     image: "/FotosBar/Brasa.png",
     badge: "Premium",
   },
@@ -128,86 +138,109 @@ const DEFAULT_DISHES: Dish[] = [
   {
     id: 17,
     name: "Lubina con berenjena",
-    description: "Fresca lubina cocinada a la plancha en el momento, acompañada de berenjena asada y un toque de aceite de oliva virgen extra",
+    description:
+      "Fresca lubina cocinada a la plancha en el momento, acompañada de berenjena asada y un toque de aceite de oliva virgen extra",
     image: "/FotosBar/Lubina2.png",
     badge: "Tradicional",
   },
-];
+]
 
 async function getDishes(): Promise<Dish[]> {
   try {
-    const data = await readFile(DISHES_FILE, "utf-8");
-    return JSON.parse(data);
+    const data = await readFile(DISHES_FILE, "utf-8")
+    return JSON.parse(data)
   } catch (error) {
-    return DEFAULT_DISHES;
+    return DEFAULT_DISHES
   }
 }
 
 async function saveDishes(dishes: Dish[]) {
-  await writeFile(DISHES_FILE, JSON.stringify(dishes, null, 2), "utf-8");
+  await writeFile(DISHES_FILE, JSON.stringify(dishes, null, 2), "utf-8")
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const dishes = await getDishes();
-    return NextResponse.json({ success: true, dishes });
+    const dishes = await getDishes()
+    // Return array directly instead of wrapped in object, frontend expects this format
+    return NextResponse.json(dishes)
   } catch (error) {
-    console.error("Error fetching dishes:", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to fetch dishes" },
-      { status: 500 }
-    );
+    console.error("[v0] Error fetching dishes:", error)
+    return NextResponse.json([], { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
-  try {
-    const { dish, action } = await request.json();
-    const dishes = await getDishes();
+  if (!validateAuthToken(request)) {
+    return createErrorResponse("Unauthorized", 401)
+  }
 
-    if (action === "add") {
-      dishes.push(dish);
-    } else if (action === "update") {
-      const index = dishes.findIndex((d) => d.id === dish.id);
-      if (index !== -1) {
-        dishes[index] = dish;
-      }
-    } else if (action === "delete") {
-      const filtered = dishes.filter((d) => d.id !== dish.id);
-      await saveDishes(filtered);
-      return NextResponse.json({ success: true });
+  try {
+    const body = await request.json()
+    const { dish, action } = body
+
+    if (!dish || !action) {
+      return createErrorResponse("Missing dish or action", 400)
     }
 
-    await saveDishes(dishes);
-    return NextResponse.json({ success: true });
+    if (!validateDishData(dish)) {
+      return createErrorResponse("Invalid dish data", 400)
+    }
+
+    const dishes = await getDishes()
+
+    if (action === "add") {
+      if (dishes.some((d) => d.id === dish.id)) {
+        return createErrorResponse("ID already exists", 409)
+      }
+      dishes.push(dish)
+    } else if (action === "update") {
+      const index = dishes.findIndex((d) => d.id === dish.id)
+      if (index !== -1) {
+        dishes[index] = dish
+      } else {
+        return createErrorResponse("Dish not found", 404)
+      }
+    } else if (action === "delete") {
+      const filtered = dishes.filter((d) => d.id !== dish.id)
+      await saveDishes(filtered)
+      return createProtectedResponse({ success: true })
+    } else {
+      return createErrorResponse("Invalid action", 400)
+    }
+
+    await saveDishes(dishes)
+    return createProtectedResponse({ success: true, dish })
   } catch (error) {
-    console.error("Error updating dishes:", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to update dishes" },
-      { status: 500 }
-    );
+    console.error("[v0] Error updating dishes:", error)
+    return createErrorResponse("Failed to update dishes", 500)
   }
 }
 
 export async function PUT(request: NextRequest) {
-  try {
-    const dish = await request.json();
-    const dishes = await getDishes();
+  if (!validateAuthToken(request)) {
+    return createErrorResponse("Unauthorized", 401)
+  }
 
-    const index = dishes.findIndex((d) => d.id === dish.id);
-    if (index !== -1) {
-      dishes[index] = dish;
-    } else {
-      dishes.push(dish);
+  try {
+    const dish = await request.json()
+
+    if (!validateDishData(dish)) {
+      return createErrorResponse("Invalid dish data", 400)
     }
 
-    await saveDishes(dishes);
-    return NextResponse.json({ success: true, dish });
+    const dishes = await getDishes()
+
+    const index = dishes.findIndex((d) => d.id === dish.id)
+    if (index !== -1) {
+      dishes[index] = dish
+    } else {
+      dishes.push(dish)
+    }
+
+    await saveDishes(dishes)
+    return createProtectedResponse({ success: true, dish })
   } catch (error) {
-    console.error("Error updating dish:", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to update dish" },
-      { status: 500 }
-    );
+    console.error("[v0] Error updating dish:", error)
+    return createErrorResponse("Failed to update dish", 500)
   }
 }
